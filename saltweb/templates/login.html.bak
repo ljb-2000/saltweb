@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+
+{% block page-from %} 
+<div class="pull-right">
+  <form class="well" action="/salt/account_login/" method="post">
+   <label>Username</label>
+   <input type="text" name='username'class="span3" placeholder="Type your username">
+   <label>Password</label>
+   <input type="password" name='password'class="span3" placeholder="Type your password">
+   <label class="checkbox">
+    <input type="checkbox">Remember me
+   </label>
+   <button type="submit" class="btn">Log me in</button>
+    {{ login_err}}
+  </form>
+ </div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+
+{% block title %}消息中心{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：消息中心  </div>
+<h2>消息中心</h2> 
+<span><i class="red n">{{msgnum}}</i>封未读 </span><br>
+<h3>标题</h3>
+{{ret.title}}<br>
+<h3>内容</h3>
+{{ret.content}}<br>
+{% endblock %}

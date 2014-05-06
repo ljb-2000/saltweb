@@ -1,0 +1,32 @@
+{% extends 'index.html' %}
+
+{% block title %}消息中心{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：消息中心  </div>
+<h2>消息中心</h2>
+<span>{{msgnum}}封未读 </span><br>
+<table class="table">
+<th>来自</th><th>标题</th><th>时间</th><th>操作</th>
+<tr>
+{% for ret in rets %}
+    <td>{{ ret.msgfrom }}</td> 
+   <td><a href="{% url "readmsg" ret.id %}">{% ifequal ret.isread 0 %}<b>{% endifequal %}{{ ret.title }}</a></td> 
+    <td>{{ ret.pubtime }}</td>
+    <td><a href="{% url "delmsg" ret.id %}">删除</a></td>
+</tr>
+{% endfor %}
+</table>
+<h3>发送信息</h3>
+<form action="" method="post">
+<select name="user">
+<option>请选择用户</option>
+{% for u in users %}
+{% ifnotequal user u %}<option>{{ u.username }}</option>{% endifnotequal %}
+{% endfor %}
+</select><br>
+<input type="text" name='msgtitle' class="span5" placeholder="输入标题"><br>
+<textarea rows=10 class="span5" name="content" placeholder="输入内容"></textarea><br>
+<button type="submit" name="sendmsg" class="btn btn-primary btn-sm hostadd_button">发送</button><br>
+</form>
+{% endblock %}

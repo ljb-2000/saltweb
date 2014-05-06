@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+</head>
+<body>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<form>
+<input type="text" name="username" id="username" value="zhangsan"><br>
+<input type="text" name="psw" id="psw" value="9999"><br>
+<input type="button" id="b1" value="登陆">
+</form>
+<div style=" border:1px solid #F00;width:200px; height:100px" id="one">
+<div>
+</body>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#b1').click(function(){
+/* get方式
+    $('#one').load("load.php?date"+Math.random()+"&username="+$('#username').val(),null,function(data,textStatus,xmlHttpRequest){
+        //alert("fanhui: "+data);
+*/
+/* post方式*/
+//    var send_data={'username':$('#username').val(),'age':'30'};
+//    $('#one').load("load.php",send_data,function(data,textStatus,xmlHttpRequest){
+        //alert("fanhui: "+data);
+//服务器返回json格式
+//    var obj=eval('('+data+')');
+//    window.alert(obj.res);
+//服务器返回xml格式数据
+    //var dom=xmlHttpRequest.responseXML;
+    //var res=result.getElementsByTagName('res');
+    //window.alert(res[0].childNodes[0].nodeValue);
+//})
+    //var send_data={'username':$('#username').val(),'passwd':$('#psw').val()};
+    $.get("{% url 'ajax' %}",send_data,function(data,ts){
+    var obj=eval('('+data+')');
+    alert(data)
+    $('#one').html(obj.res);
+})
+})
+})
+</script>
+</html>

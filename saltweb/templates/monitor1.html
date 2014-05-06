@@ -1,0 +1,54 @@
+{% extends 'index.html' %}
+
+{% block title %}图形监控{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：监控 >> 图形监控  </div>
+<h2>主机状态监控</h2>
+<form class="form-inline" action="" method="post" style="margin-bottom:0;">
+<select name="host">
+<option>请选择主机</option>
+{% for saltid in saltids %}
+<option>{{ saltid }}</option>
+{% endfor %}
+</select>
+<select name="type">
+<option>请选择监控对象</option>
+{% for ret in typerets %}
+<option value={{ret.name}}>{{ ret.alias }}</option>
+{% endfor %}
+</select>
+<button type="submit" class="btn" name='rrdcreate'>创建图形</button>
+<button type="submit" class="btn" name='rrddel'>删除图形</button>
+</form>
+
+<form class="form-inline" action="" method="post" style="margin-bottom:0;">
+<select name="host">
+<option>请选择主机</option>
+{% for saltid in saltids %}
+<option>{{ saltid }}</option>
+{% endfor %}
+</select>
+<select name="time">
+<option>请选择时间段</option>
+<option value='3600'>last 1 hour</option>
+<option value='7200'>last 2 hours</option>
+<option value='86400'>last 1 day</option>
+<option value='604800'>last 1 week</option>
+<option value='2419200'>last 1 month</option>
+<option value='29030400'>last 1 year</option>
+</select>
+<button type="submit" class="btn" name='rrdgraph'>查看图形</button>
+</form>
+<br>
+{% for i in graphlist %}
+<img src="/static/rrd/{{host}}/{{ i }}">
+{% endfor %}
+<script type="text/javascript">
+function myrefresh() 
+{ 
+       window.location.reload(); 
+} 
+window.setInterval("myrefresh()",20000);
+</script>
+{% endblock %}
