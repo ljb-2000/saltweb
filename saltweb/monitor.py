@@ -15,10 +15,11 @@ try:
     rets = c.cmd('*','test.ping')
 except:
     nowtime = int(time.time())
-    lasttime = Monitor.objects.filter(saltid=comm.localhostid)[0].nowtime
+    lasttime = Mastermonitor.objects.filter(id=1)[0].nowtime
     if not lasttime or int(nowtime) > int(lasttime) + int(comm.interval):
-        Monitor.objects.filter(saltid=comm.localhostid).update(nowtime=nowtime)
-        send_mail(u'CRITICAL: salt-master down','salt-master down',comm.from_mail,comm.samail_list)
+        Mastermonitor.objects.filter(id=1).update(nowtime=nowtime)
+        send_mail(u'CRITICAL: salt-master down',u'saltwebmaster',comm.from_mail,comm.samail_list)
+        Alarm.objects.create(hostid="saltwebmaster",msg='CRITICAL: salt-master down',to=comm.samail_list)
     sys.exit()
 saltids = [r['saltid'] for r in Hosts.objects.values('saltid')]
 saltkeys = c.run_job('*','cmd.run',['echo'])['minions']
@@ -53,6 +54,7 @@ for down in downlist:
     rets[down] =  'False'
 if oldlist:
     saltids = [r['saltid'] for r in Hosts.objects.values('saltid')] #如果删除minion则重新生成
+    rets = c.cmd('*','test.ping')
 for saltid,saltstats in rets.items():
     ip = Hosts.objects.get(saltid=saltid).ip
     if saltid in saltids:
@@ -75,6 +77,8 @@ for saltid,saltstats in rets.items():
         Monitor.objects.create(saltid=saltid,ip=ip,saltstats=str(saltstats))
 downhostlist = [i.saltid for i in Monitor.objects.filter(sendmail=1,closemail=0)]
 if downhostlist:
+    msg = u'CRITICAL: host saltstats down'
     #comm.sendmail(comm.samail_list,'CRITICAL: host saltstats down',str(downhostlist))
-    send_mail(u'CRITICAL: host saltstats down',str(downhostlist),comm.from_mail,comm.samail_list)
+    send_mail(msg,str(downhostlist),comm.from_mail,comm.samail_list)
+    Alarm.objects.create(hostid=str(downhostlist),msg=msg,to=comm.samail_list)
     Monitor.objects.all().update(sendmail=0)

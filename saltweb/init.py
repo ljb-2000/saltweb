@@ -7,7 +7,6 @@ import comm
 from saltweb.models import *
 
 os.system('cd %s ;nohup python -m SimpleHTTPServer >/tmp/t.out 2>&1 &' % comm.upload_dir)
-sys.exit(0)
 #Pro_type.objects.all().delete()
 #Pro_type.objects.create(name='SSH')
 #Pro_type.objects.create(name='SSH-KEY')
@@ -20,15 +19,9 @@ os.system('python %smonitor.py' % comm.script_dir)
 os.system('cd %s ;nohup python -m SimpleHTTPServer >/tmp/t.out 2>&1 &' % comm.upload_dir)
 os.system('rm -rf %s %s' % (comm.rrd_dir,comm.rrdpic_dir))
 os.system('uwsgi --ini %s' % comm.base_dir + 'uwsgi.ini')
-if not os.path.isdir(comm.rrdpic_dir + comm.localhostid):os.makedirs(comm.rrdpic_dir + comm.localhostid)
-if not os.path.isdir(comm.rrd_dir + comm.localhostid):os.makedirs(comm.rrd_dir + comm.localhostid)
-rrdfile = comm.rrd_dir + comm.localhostid + '/'+ 'connum.rrd'
 if not os.path.exists(rrdfile):rrdcreate1(rrdfile,rrdstep)
-rrdfile = comm.rrd_dir + comm.localhostid + '/'+ 'load.rrd'
-if not os.path.exists(rrdfile):rrdcreate1(rrdfile,rrdstep)
-os.system('echo -e "master: %s\nid: %s" >> /etc/salt/minion' % (comm.masterip,comm.localhostid))
 os.system('echo "auto_accept: True" >>/etc/salt/master')
 os.system('grep "^default_include: master.d/\*\.conf" /etc/salt/master >/dev/null 2>&1|| echo "default_include: master.d/*.conf" >> /etc/salt/master')
 groupsconfdir = os.path.dirname(comm.groupsconf)
 if not os.path.exists(groupsconfdir): os.makedirs(groupsconfdir)
-if not os.path.exists(comm.groupsconf): os.system('echo "nodegroups:\n    dfgroup: %s" > %s' % (comm.localhostid,comm.groupsconf))
+if not os.path.exists(comm.groupsconf): os.system('echo "nodegroups:\n    dfgroup: testhostid" > %s' % comm.groupsconf)

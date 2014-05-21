@@ -4,7 +4,7 @@
 ####################
 #全局变量
 from_mail = 'saltweb@hhr.com'
-samail_list = ['hhr66@qq.com',]
+samail_list = ['hhr66@qq.com','huanghuirong@hudong.com']
 interval = 7200 #报警间隔
 masterip = '172.16.1.237'
 network_list = ('172.16','192.168','10.0')
@@ -16,7 +16,6 @@ script_dir = '%ssaltweb/' % base_dir
 rrd_dir = '%srrdtool/' % base_dir
 rrdpic_dir = '%ssaltweb/static/rrd/' % base_dir
 upload_dir = '%supload/' % base_dir
-localhostid = '%s_master' % masterip
 sshdefaultport = 50718
 thread_num = 20
 rrdstep = 120 

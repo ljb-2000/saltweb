@@ -14,6 +14,8 @@ class UsersAdmin(admin.ModelAdmin):
 class MonitorAdmin(admin.ModelAdmin):
     list_display = ('saltid','ip','pingstats','saltstats','load','connum','num','nowtime','sendmail','closemail')
     ordering = ('saltstats',)
+class MastermonitorAdmin(admin.ModelAdmin):
+    list_display = ('saltid','ip','connum','num','nowtime','sendmail','closemail')
 class UploadAdmin(admin.ModelAdmin):
     list_display = ('name','file')
 class LogAdmin(admin.ModelAdmin):
@@ -36,10 +38,18 @@ class UrlAdmin(admin.ModelAdmin):
 class DeploylogAdmin(admin.ModelAdmin):
     list_display = ('name','saltid','ip','starttime','status','deployret','endtime')
     ordering = ('-id',)
+class AlarmAdmin(admin.ModelAdmin):
+    list_display = ('hostid','msg','to','nowtime')
+    ordering = ('-id',)
+class MonionslogAdmin(admin.ModelAdmin):
+    list_display = ('name','saltid','ip','starttime','status','deployret','endtime')
+    ordering = ('-id',)
+
 admin.site.register(Pro_type)
 admin.site.register(Users,UsersAdmin)
 admin.site.register(Hosts,HostsAdmin)
 admin.site.register(Monitor,MonitorAdmin)
+admin.site.register(Mastermonitor,MastermonitorAdmin)
 admin.site.register(Upload,UploadAdmin)
 admin.site.register(Log,LogAdmin)
 admin.site.register(Soft)
@@ -50,3 +60,5 @@ admin.site.register(Address)
 admin.site.register(Msg,MsgAdmin)
 admin.site.register(Url)
 admin.site.register(Deploylog,DeploylogAdmin)
+admin.site.register(Alarm,AlarmAdmin)
+admin.site.register(Monionslog,MonionslogAdmin)

@@ -16,16 +16,11 @@
 		{% endfor %}
                 </select>   
                 <button type="submit" class="btn" name="install">部署服务</button> <br>
-IP地址<input type="text" class="input-small" name='host'>
-用户名<input type="text" class="input-small" name='username'>
-密码<input type="text" class="input-small" name='passwd'>
-<button type="submit" class="btn" name="installsalt">部署salt-minion</button>
            </form>
     </div>
 </div>
 说明：<br>
 点击部署服务在后台执行，需刷新页面查看是否执行完成<br>
-部署salt-minion的前提条件，一、免密码的sudo权限用户，二、sudo配置文件中注释掉Default requiretty<br>
 只显示最后的8条记录，查看全部的记录到后台<br><br>
 <table class="table">
 <th>服务</th><th>saltid</th><th>ip地址</th><th>开始时间</th><th>状态</th><th>部署结果</th><th>结束时间</th>

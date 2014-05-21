@@ -44,11 +44,4 @@
 {% for i in graphlist %}
 <img src="/static/rrd/{{host}}/{{ i }}">
 {% endfor %}
-<script type="text/javascript">
-function myrefresh() 
-{ 
-       window.location.reload(); 
-} 
-window.setInterval("myrefresh()",20000);
-</script>
 {% endblock %}

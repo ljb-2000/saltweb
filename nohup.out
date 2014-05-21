@@ -1,0 +1,340 @@
+Validating models...
+
+0 errors found
+May 21, 2014 - 09:45:33
+Django version 1.6.2, using settings 'saltweb.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+[21/May/2014 09:45:56] "GET /salt/minions/ HTTP/1.1" 200 11469
+[21/May/2014 09:46:24] "GET /salt/urlmonitor/ HTTP/1.1" 200 11386
+[21/May/2014 09:46:27] "GET /salt/minions/ HTTP/1.1" 200 11469
+[21/May/2014 09:46:30] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 09:46:33] "GET /salt/minions/ HTTP/1.1" 200 11469
+[21/May/2014 09:47:11] "GET /salt/minions/ HTTP/1.1" 200 11470
+[21/May/2014 14:11:01] "POST /salt/minions/ HTTP/1.1" 200 11625
+[21/May/2014 14:18:25] "GET /salt/minions/ HTTP/1.1" 200 11625
+[21/May/2014 14:39:22] "GET /salt/minions/ HTTP/1.1" 200 11625
+[21/May/2014 14:40:14] "POST /salt/minions/ HTTP/1.1" 200 11780
+[21/May/2014 14:40:50] "GET /salt/minions/ HTTP/1.1" 200 11780
+[21/May/2014 14:40:53] "GET /salt/minions/ HTTP/1.1" 200 11780
+[21/May/2014 14:40:57] "GET /salt/minions/ HTTP/1.1" 200 11780
+[21/May/2014 14:42:32] "GET /salt/minions/ HTTP/1.1" 200 11780
+[21/May/2014 14:42:36] "GET /salt/minions/ HTTP/1.1" 200 11780
+[21/May/2014 14:43:14] "GET /salt/minions/ HTTP/1.1" 200 11780
+[21/May/2014 14:43:17] "GET /salt/minions/ HTTP/1.1" 200 11780
+[21/May/2014 14:43:58] "GET /salt/minions/ HTTP/1.1" 200 11780
+[21/May/2014 14:44:00] "GET /salt/ HTTP/1.1" 200 11865
+[21/May/2014 14:44:02] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 14:44:12] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 14:44:14] "GET /salt/monitor/ HTTP/1.1" 200 11162
+[21/May/2014 14:44:25] "GET /salt/sysuser/ HTTP/1.1" 200 12229
+[21/May/2014 14:44:30] "GET /salt/monitor/ HTTP/1.1" 200 11162
+[21/May/2014 14:44:32] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 14:44:38] "GET /salt/minions/ HTTP/1.1" 200 11780
+Validating models...
+
+0 errors found
+May 21, 2014 - 09:45:38
+Django version 1.6.2, using settings 'saltweb.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+{u'172.16.1.238': u'http://mirrors.hustunique.com/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: [Errno 12] Timeout on http://mirrors.hustunique.com/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: (28, \'Operation too slow. Less than 1 bytes/sec transfered the last 30 seconds\')\nTrying other mirror.\nhttp://mirrors.neusoft.edu.cn/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: [Errno 12] Timeout on http://mirrors.neusoft.edu.cn/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: (28, \'Operation too slow. Less than 1 bytes/sec transfered the last 30 seconds\')\nTrying other mirror.\nhttp://mirror.esocc.com/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: [Errno -1] Metadata file does not match checksum\nTrying other mirror.\nhttp://mirrors.aliyun.com/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: [Errno 14] PYCURL ERROR 22 - "The requested URL returned error: 416"\nTrying other mirror.\nhttp://mirrors.hust.edu.cn/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: [Errno 14] PYCURL ERROR 22 - "The requested URL returned error: 416"\nTrying other mirror.\nhttp://mirrors.grandcloud.cn/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: [Errno 14] PYCURL ERROR 22 - "The requested URL returned error: 416"\nTrying other mirror.\nhttp://mirrors.stuhome.net/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: [Errno 14] PYCURL ERROR 22 - "The requested URL returned error: 416"\nTrying other mirror.\nhttp://mirrors.btte.net/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: [Errno 14] PYCURL ERROR 22 - "The requested URL returned error: 416"\nTrying other mirror.\nhttp://mirror.neu.edu.cn/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: [Errno 14] PYCURL ERROR 22 - "The requested URL returned error: 416"\nTrying other mirror.\nhttp://ftp.nsysu.edu.tw/CentOS/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: [Errno 14] PYCURL ERROR 22 - "The requested URL returned error: 416"\nTrying other mirror.\nhttp://mirrors.hustunique.com/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: [Errno 12] Timeout on http://mirrors.hustunique.com/centos/6.5/os/x86_64/repodata/617a880b84a87969e04bfeebb1b96d5f441da42ee931d374fa6b6d57decd821e-primary.sqlite.bz2: (28, \'Operation too slow. Less than 1 bytes/sec transfered the last 30 seconds\')\nTrying other mirror.\n'}
+{u'172.16.1.238': u'Success\n'}
+[21/May/2014 15:12:38] "GET /salt/minions/ HTTP/1.1" 200 12114
+Deleting the following keys:
+Accepted Keys:
+172.16.1.238_test1
+Key for minion 172.16.1.238_test1 deleted.
+Internal Server Error: /salt/minions/
+Traceback (most recent call last):
+  File "/usr/lib64/python2.6/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/lib64/python2.6/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/root/saltweb/saltweb/views.py", line 210, in minions
+    Monionslog.objects.filter(saltid=saltid).update(status='已完成',ret=ret[saltid],endtime=endtime)
+  File "/usr/lib64/python2.6/site-packages/django/db/models/query.py", line 488, in update
+    query.add_update_values(kwargs)
+  File "/usr/lib64/python2.6/site-packages/django/db/models/sql/subqueries.py", line 132, in add_update_values
+    field, model, direct, m2m = self.get_meta().get_field_by_name(name)
+  File "/usr/lib64/python2.6/site-packages/django/db/models/options.py", line 377, in get_field_by_name
+    % (self.object_name, name))
+FieldDoesNotExist: Monionslog has no field named 'ret'
+[21/May/2014 15:13:15] "POST /salt/minions/ HTTP/1.1" 500 82340
+Validating models...
+
+0 errors found
+May 21, 2014 - 14:46:25
+Django version 1.6.2, using settings 'saltweb.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+Unhandled exception in thread started by <function wrapper at 0xab0a28>
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/salt/log/setup.py", line 652, in __global_logging_exception_handler
+    logging.getLogger(__name__).error(
+AttributeError: 'NoneType' object has no attribute 'getLogger'
+
+Original exception was:
+Traceback (most recent call last):
+  File "/usr/lib64/python2.6/site-packages/django/utils/autoreload.py", line 100, in wrapper
+    filename = traceback.extract_tb(tb)[-1][0]
+  File "/usr/lib64/python2.6/traceback.py", line 100, in extract_tb
+    linecache.checkcache(filename)
+AttributeError: 'NoneType' object has no attribute 'checkcache'
+The key glob '172.16.1.238_test1' does not match any accepted, unaccepted or rejected keys.
+Internal Server Error: /salt/minions/
+Traceback (most recent call last):
+  File "/usr/lib64/python2.6/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/lib64/python2.6/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/root/saltweb/saltweb/views.py", line 210, in minions
+    Monionslog.objects.filter(saltid=saltid).update(status='已完成',deployret=ret[saltid],endtime=endtime)
+KeyError: u'172.16.1.238_test1'
+[21/May/2014 15:14:07] "POST /salt/minions/ HTTP/1.1" 500 70095
+Validating models...
+
+0 errors found
+May 21, 2014 - 15:14:01
+Django version 1.6.2, using settings 'saltweb.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+No minions matched the target. No command was sent, no jid was assigned.
+Unhandled exception in thread started by <function wrapper at 0x1f5aa28>
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/salt/log/setup.py", line 652, in __global_logging_exception_handler
+    logging.getLogger(__name__).error(
+AttributeError: 'NoneType' object has no attribute 'getLogger'
+
+Original exception was:
+Traceback (most recent call last):
+  File "/usr/lib64/python2.6/site-packages/django/utils/autoreload.py", line 100, in wrapper
+    filename = traceback.extract_tb(tb)[-1][0]
+  File "/usr/lib64/python2.6/traceback.py", line 100, in extract_tb
+    linecache.checkcache(filename)
+AttributeError: 'NoneType' object has no attribute 'checkcache'
+[21/May/2014 15:16:26] "GET /salt/minions/ HTTP/1.1" 200 12436
+[21/May/2014 15:16:59] "GET /salt/assets/ HTTP/1.1" 200 11279
+[21/May/2014 15:17:02] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 15:17:09] "GET /salt/assets/ HTTP/1.1" 200 11279
+[21/May/2014 15:18:09] "GET /salt/monitor/ HTTP/1.1" 200 11160
+[21/May/2014 15:18:12] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 15:18:15] "GET /salt/minions/ HTTP/1.1" 200 12436
+Deleting the following keys:
+Accepted Keys:
+172.16.1.238_test1
+Key for minion 172.16.1.238_test1 deleted.
+[21/May/2014 15:18:42] "POST /salt/minions/ HTTP/1.1" 200 12654
+[21/May/2014 15:18:54] "GET /salt/monitor/ HTTP/1.1" 200 11162
+[21/May/2014 15:18:57] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 15:19:02] "GET /salt/monitor/ HTTP/1.1" 200 11162
+[21/May/2014 15:19:05] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 15:19:32] "GET /salt/minions/ HTTP/1.1" 200 12654
+[21/May/2014 15:19:34] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 15:22:07] "GET /salt/install/ HTTP/1.1" 200 12773
+[21/May/2014 15:22:10] "GET /salt/install/ HTTP/1.1" 200 12773
+[21/May/2014 15:22:12] "GET /salt/install/ HTTP/1.1" 200 12773
+[21/May/2014 15:22:25] "GET /salt/minions/ HTTP/1.1" 200 12654
+Validating models...
+
+0 errors found
+May 21, 2014 - 15:15:49
+Django version 1.6.2, using settings 'saltweb.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+[21/May/2014 15:25:55] "GET /salt/minions/ HTTP/1.1" 200 12654
+[21/May/2014 15:25:59] "GET /salt/assets/ HTTP/1.1" 200 11279
+[21/May/2014 15:26:04] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 15:26:20] "GET /salt/minions/ HTTP/1.1" 200 12654
+[21/May/2014 15:26:22] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 15:26:23] "GET /salt/ HTTP/1.1" 200 11865
+[21/May/2014 15:27:54] "GET /salt/minions/ HTTP/1.1" 200 12654
+[21/May/2014 15:27:57] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 15:28:00] "GET /salt/minions/ HTTP/1.1" 200 12654
+Deleting the following keys:
+Accepted Keys:
+172.16.1.238_test1
+Key for minion 172.16.1.238_test1 deleted.
+[21/May/2014 15:28:10] "POST /salt/minions/ HTTP/1.1" 200 12679
+[21/May/2014 15:28:25] "GET /salt/assets/ HTTP/1.1" 200 11279
+[21/May/2014 15:28:27] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 15:30:36] "GET /salt/minions/ HTTP/1.1" 200 12679
+[21/May/2014 15:30:48] "POST /salt/minions/ HTTP/1.1" 200 12679
+[21/May/2014 15:30:55] "GET /salt/minions/ HTTP/1.1" 200 12706
+[21/May/2014 15:31:02] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 15:31:09] "GET /salt/assets/ HTTP/1.1" 200 11279
+[21/May/2014 15:33:48] "GET /salt/minions/ HTTP/1.1" 200 12706
+Validating models...
+
+0 errors found
+May 21, 2014 - 15:25:24
+Django version 1.6.2, using settings 'saltweb.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+[21/May/2014 15:40:26] "GET /salt/minions/ HTTP/1.1" 200 12706
+[21/May/2014 15:40:29] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 15:40:35] "GET /salt/monitor/ HTTP/1.1" 200 11162
+[21/May/2014 15:40:38] "GET /salt/minions/ HTTP/1.1" 200 12706
+Deleting the following keys:
+Accepted Keys:
+172.16.1.238_test1
+Key for minion 172.16.1.238_test1 deleted.
+[21/May/2014 15:40:53] "POST /salt/minions/ HTTP/1.1" 200 12766
+Validating models...
+
+0 errors found
+May 21, 2014 - 15:40:13
+Django version 1.6.2, using settings 'saltweb.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+[21/May/2014 15:42:48] "GET /salt/minions/ HTTP/1.1" 200 12766
+[21/May/2014 15:42:48] "GET /salt/minions/ HTTP/1.1" 200 12766
+[21/May/2014 15:42:51] "GET /salt/assets/ HTTP/1.1" 200 11279
+[21/May/2014 15:42:54] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 15:42:56] "GET /salt/minions/ HTTP/1.1" 200 12766
+[21/May/2014 15:43:05] "POST /salt/minions/ HTTP/1.1" 200 12766
+[21/May/2014 15:43:13] "GET /salt/minions/ HTTP/1.1" 200 12793
+[21/May/2014 15:43:27] "GET /salt/minions/ HTTP/1.1" 200 12793
+[21/May/2014 15:43:30] "GET /salt/assets/ HTTP/1.1" 200 11279
+[21/May/2014 15:43:51] "GET /salt/minions/ HTTP/1.1" 200 12793
+[21/May/2014 15:44:34] "GET /salt/assets/ HTTP/1.1" 200 11606
+Validating models...
+
+0 errors found
+May 21, 2014 - 15:42:41
+Django version 1.6.2, using settings 'saltweb.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+Unhandled exception in thread started by <function wrapper at 0x19f1a28>
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python2.6/site-packages/salt/log/setup.py", line 652, in __global_logging_exception_handler
+    logging.getLogger(__name__).error(
+AttributeError: 'NoneType' object has no attribute 'getLogger'
+
+Original exception was:
+Traceback (most recent call last):
+  File "/usr/lib64/python2.6/site-packages/django/utils/autoreload.py", line 96, in wrapper
+    et, ev, tb = sys.exc_info()
+AttributeError: 'NoneType' object has no attribute 'exc_info'
+[21/May/2014 15:47:01] "GET /salt/minions/ HTTP/1.1" 200 12890
+[21/May/2014 15:47:28] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 15:47:35] "GET /salt/minions/ HTTP/1.1" 200 12890
+[21/May/2014 15:47:45] "POST /salt/minions/ HTTP/1.1" 200 12858
+[21/May/2014 15:47:50] "GET /salt/minions/ HTTP/1.1" 200 12858
+[21/May/2014 15:47:55] "GET /salt/minions/ HTTP/1.1" 200 12885
+[21/May/2014 15:49:27] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 15:49:29] "GET /salt/monitor/ HTTP/1.1" 200 11162
+[21/May/2014 15:49:43] "GET /salt/ HTTP/1.1" 200 11865
+[21/May/2014 15:49:45] "GET /salt/minions/ HTTP/1.1" 200 12885
+[21/May/2014 15:49:56] "GET /salt/monitor/ HTTP/1.1" 200 11162
+[21/May/2014 15:50:06] "GET /salt/minions/ HTTP/1.1" 200 12885
+[21/May/2014 15:50:35] "POST /salt/minions/ HTTP/1.1" 200 12853
+[21/May/2014 15:50:55] "GET /salt/monitor/ HTTP/1.1" 200 11162
+[21/May/2014 15:51:10] "GET /salt/minions/ HTTP/1.1" 200 12895
+Deleting the following keys:
+Accepted Keys:
+172.16.1.238_test1
+Key for minion 172.16.1.238_test1 deleted.
+[21/May/2014 15:51:29] "POST /salt/minions/ HTTP/1.1" 200 12892
+Validating models...
+
+0 errors found
+May 21, 2014 - 15:45:53
+Django version 1.6.2, using settings 'saltweb.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+Deleting the following keys:
+Accepted Keys:
+172.16.1.238_test1
+Key for minion 172.16.1.238_test1 deleted.
+[21/May/2014 15:56:44] "POST /salt/minions/ HTTP/1.1" 200 12937
+Deleting the following keys:
+Accepted Keys:
+172.16.1.238_test1
+Key for minion 172.16.1.238_test1 deleted.
+[21/May/2014 15:57:31] "POST /salt/minions/ HTTP/1.1" 200 12905
+[21/May/2014 15:57:38] "GET /salt/assets/ HTTP/1.1" 200 11279
+[21/May/2014 15:57:41] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 15:57:59] "GET /salt/minions/ HTTP/1.1" 200 12905
+[21/May/2014 15:58:12] "POST /salt/minions/ HTTP/1.1" 200 12873
+[21/May/2014 15:58:15] "GET /salt/minions/ HTTP/1.1" 200 12873
+[21/May/2014 15:58:17] "GET /salt/minions/ HTTP/1.1" 200 12900
+[21/May/2014 15:58:22] "GET /salt/minions/ HTTP/1.1" 200 12900
+[21/May/2014 15:58:26] "GET /salt/minions/ HTTP/1.1" 200 12900
+[21/May/2014 15:58:43] "GET /salt/minions/ HTTP/1.1" 200 12900
+[21/May/2014 15:58:47] "GET /salt/minions/ HTTP/1.1" 200 12900
+[21/May/2014 15:58:57] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 15:59:01] "GET /salt/assets/ HTTP/1.1" 200 11279
+[21/May/2014 15:59:16] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 15:59:35] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 15:59:37] "GET /salt/monitor/ HTTP/1.1" 200 10912
+[21/May/2014 15:59:39] "GET /salt/minions/ HTTP/1.1" 200 12900
+[21/May/2014 16:03:38] "GET /salt/minions/ HTTP/1.1" 200 13162
+[21/May/2014 16:04:27] "GET /salt/install/ HTTP/1.1" 200 12773
+[21/May/2014 16:04:48] "GET /salt/minions/ HTTP/1.1" 200 13162
+[21/May/2014 16:04:58] "GET /salt/install/ HTTP/1.1" 200 12773
+[21/May/2014 16:05:25] "GET /salt/minions/ HTTP/1.1" 200 13162
+[21/May/2014 16:11:52] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 16:12:06] "GET /salt/minions/ HTTP/1.1" 200 13162
+[21/May/2014 16:12:26] "GET /salt/optlog/ HTTP/1.1" 200 12635
+[21/May/2014 16:13:25] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 16:13:28] "GET /salt/minions/ HTTP/1.1" 200 13162
+[21/May/2014 16:17:23] "GET /salt/todo/ HTTP/1.1" 200 12029
+[21/May/2014 16:17:26] "GET /salt/optlog/ HTTP/1.1" 200 12635
+Validating models...
+
+0 errors found
+May 21, 2014 - 15:56:14
+Django version 1.6.2, using settings 'saltweb.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+[21/May/2014 16:20:32] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 16:20:35] "GET /salt/minions/ HTTP/1.1" 200 13162
+Deleting the following keys:
+Accepted Keys:
+172.16.1.238_test1
+Key for minion 172.16.1.238_test1 deleted.
+[21/May/2014 16:20:42] "POST /salt/minions/ HTTP/1.1" 200 13167
+[21/May/2014 16:20:49] "GET /salt/optlog/ HTTP/1.1" 200 12488
+[21/May/2014 16:21:03] "GET /salt/minions/ HTTP/1.1" 200 13130
+[21/May/2014 16:21:38] "POST /salt/minions/ HTTP/1.1" 200 13103
+[21/May/2014 16:21:43] "GET /salt/assets/ HTTP/1.1" 200 11279
+[21/May/2014 16:21:49] "GET /salt/urlmonitor/ HTTP/1.1" 200 11386
+[21/May/2014 16:22:13] "GET /salt/install/ HTTP/1.1" 200 12773
+[21/May/2014 16:22:19] "GET /salt/optlog/ HTTP/1.1" 200 12488
+[21/May/2014 16:22:21] "GET /salt/todo/ HTTP/1.1" 200 12029
+[21/May/2014 16:25:05] "GET /salt/sysuser/ HTTP/1.1" 200 12229
+[21/May/2014 16:39:42] "GET /salt/minions/ HTTP/1.1" 200 13345
+[21/May/2014 16:40:11] "GET /salt/groups/ HTTP/1.1" 200 10868
+[21/May/2014 16:40:31] "GET /salt/saltcmd/ HTTP/1.1" 200 11453
+[21/May/2014 16:40:38] "POST /salt/saltcmd/ HTTP/1.1" 200 11595
+[21/May/2014 16:40:43] "GET /salt/optlog/ HTTP/1.1" 200 12490
+[21/May/2014 16:40:47] "GET /salt/sshcmd/ HTTP/1.1" 200 11915
+Validating models...
+
+0 errors found
+May 21, 2014 - 16:20:18
+Django version 1.6.2, using settings 'saltweb.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+['172.16.1.238_test1', '172.16.1.220_localhost.localdomain']
+[21/May/2014 16:41:07] "POST /salt/sshcmd/ HTTP/1.1" 200 12043
+[21/May/2014 16:41:14] "GET /salt/optlog/ HTTP/1.1" 200 12477
+[21/May/2014 16:41:24] "GET /salt/sysuser/ HTTP/1.1" 200 12229
+[21/May/2014 16:42:21] "GET /salt/assets/ HTTP/1.1" 200 11606
+[21/May/2014 16:42:23] "GET /salt/monitor/ HTTP/1.1" 200 11162
+[21/May/2014 16:42:26] "GET /salt/monitor1/ HTTP/1.1" 200 11444
+[21/May/2014 16:42:31] "POST /salt/monitor1/ HTTP/1.1" 200 11499
+[21/May/2014 16:42:31] "GET /static/rrd/172.16.1.238_test1/connum.png HTTP/1.1" 200 12952
+[21/May/2014 16:42:37] "POST /salt/monitor1/ HTTP/1.1" 200 11552
+[21/May/2014 16:42:37] "GET /static/rrd/172.16.1.238_test1/connum.png HTTP/1.1" 200 13013
+[21/May/2014 16:42:37] "GET /static/rrd/172.16.1.238_test1/load.png HTTP/1.1" 200 12939
+[21/May/2014 16:42:41] "POST /salt/monitor1/ HTTP/1.1" 200 11584
+[21/May/2014 16:42:41] "GET /static/rrd/172.16.1.220_localhost.localdomain/connum.png HTTP/1.1" 200 12738
+[21/May/2014 16:42:41] "GET /static/rrd/172.16.1.220_localhost.localdomain/load.png HTTP/1.1" 200 13072
+[21/May/2014 16:42:53] "POST /salt/monitor1/ HTTP/1.1" 200 11552
+[21/May/2014 16:42:53] "GET /static/rrd/172.16.1.238_test1/connum.png HTTP/1.1" 200 12915
+[21/May/2014 16:42:53] "GET /static/rrd/172.16.1.238_test1/load.png HTTP/1.1" 200 12844

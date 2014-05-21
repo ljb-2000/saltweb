@@ -103,23 +103,23 @@ def monitor1(request):
                 os.remove(rrdfile)
             if os.path.exists(rrdpic):
                 os.remove(rrdpic)
-    if not os.path.isdir(rrdpic_dir + host):
-        os.makedirs(rrdpic_dir + host)
-    if not os.path.isdir(rrd_dir + host):
-        os.makedirs(rrd_dir + host)
-    if not host: host = localhostid
-    start = 'N-%s' % times
-    rrdfilelist = os.listdir(rrd_dir + host)
-    for i in rrdfilelist:
-        type = os.path.splitext(i)[0]
-        rrdfile1 = rrd_dir + host + '/' + i
-        pic1 = rrdpic_dir + host + '/' + type + '.png'
-        if not times:start = 'N-3600'
-        title1 = host + ' ' + type
-        data1 = str(type)
-        vertical = ''
-        rrdgraph1(pic1,rrdfile1,start,title1,data1,vertical)
-    graphlist = os.listdir(rrdpic_dir + host)
+        if not os.path.isdir(rrdpic_dir + host):
+            os.makedirs(rrdpic_dir + host)
+        if not os.path.isdir(rrd_dir + host):
+            os.makedirs(rrd_dir + host)
+        #if not host: host = localhostid
+        start = 'N-%s' % times
+        rrdfilelist = os.listdir(rrd_dir + host)
+        for i in rrdfilelist:
+            type = os.path.splitext(i)[0]
+            rrdfile1 = rrd_dir + host + '/' + i
+            pic1 = rrdpic_dir + host + '/' + type + '.png'
+            if not times:start = 'N-3600'
+            title1 = host + ' ' + type
+            data1 = str(type)
+            vertical = ''
+            rrdgraph1(pic1,rrdfile1,start,title1,data1,vertical)
+        graphlist = os.listdir(rrdpic_dir + host)
     return render_to_response('monitor1.html',locals())
 
 @login_required
@@ -170,6 +170,57 @@ def assets(request):
     return render_to_response('assets.html',locals())
 
 @login_required
+def minions(request):
+    user = request.user
+    msgnum = Msg.objects.filter(isread=0,msgto=user).count()
+    saltids = [row['saltid'] for row in Hosts.objects.values('saltid')]
+    if request.method == 'POST':
+        if request.POST.has_key("add"):
+            port = sshdefaultport
+            host = request.POST.get('host','')
+            username = request.POST.get('username','')
+            passwd = request.POST.get('passwd','')
+            cmd = "Sys_ver=`uname -a|awk -F'el' '{print substr($2,1,1)}'` "
+            cmd += '; [ $Sys_ver -eq 5 ] && sudo rpm -Uvh http://mirrors.sohu.com/fedora-epel/5/x86_64/epel-release-5-4.noarch.rpm \
+                >/dev/null 2>&1'
+            cmd += '; [ $Sys_ver -eq 6 ] && sudo rpm -Uvh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm \
+                >/dev/null 2>&1'
+            cmd += '; sudo yum -y install salt-minion >/dev/null'
+            cmd += '&& sudo sed -i "$ a\master: %s" /etc/salt/minion ' %masterip
+            cmd += '&& sudo sed -i "$ a\id: %s_`hostname`" /etc/salt/minion ' % host
+            cmd += '&& sudo /etc/init.d/salt-minion restart >/dev/null'
+            cmd += "&& echo 'Success'"
+            def sshfc():
+                Monionslog.objects.create(name='add_minion',ip=host)
+                id = Monionslog.objects.order_by('-id')[0].id
+                ret = ssh(host,port,username,passwd,cmd)
+                endtime = time.strftime("%Y-%m-%d %H:%M:%S")
+                Monionslog.objects.filter(id=id).update(status='已完成',deployret=ret[host],endtime=endtime)
+            threading.Thread(target=sshfc).start()
+            time.sleep(1)   
+        if request.POST.has_key("del"):
+            saltid = request.POST.get('saltid','') 
+            Monionslog.objects.create(name='del_minion',saltid=saltid)
+            id = Monionslog.objects.order_by('-id')[0].id
+            cmd = 'sed -i "s/^master/#master/g" /etc/salt/minion'
+            cmd += '&& /etc/init.d/salt-minion stop >/dev/null'
+            cmd += "&& echo 'Success'"
+            c = salt.client.LocalClient()
+            ret = c.cmd(saltid,'cmd.run',[cmd],timeout=5)
+            if ret:
+                ret = 'Success'
+            else:
+                ret = 'Error: minion 宕机或者salt-minion服务未开启'
+            os.system('salt-key -d %s -y' % saltid )
+            Hosts.objects.filter(saltid=saltid).delete()
+            Monitor.objects.filter(saltid=saltid).delete()
+            endtime = time.strftime("%Y-%m-%d %H:%M:%S")
+            Monionslog.objects.filter(id=id).update(status='已完成',deployret=ret,endtime=endtime)
+            Log.objects.create(user=str(user),ip='-',saltid=saltid,logtype='del_minion',execerr=ret)
+    deployrets = Monionslog.objects.order_by('-id')[0:7]
+    return render_to_response('minions.html',locals())
+
+@login_required
 def urlmonitor(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
@@ -214,7 +265,7 @@ def urldel(request,id=''):
 def chagelog(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    rets = Chagelog.objects.all()
+    rets = Chagelog.objects.order_by("-updatetime")
     return render_to_response('chagelog.html',locals())
 
 @login_required
@@ -321,17 +372,17 @@ def audit(request):
     if request.method == 'POST':
         if request.POST.has_key("new"):
             name = request.POST.get('name','')
-            if os.path.isfile(name):
-                f = open(name)
+            if os.path.isfile(upload_dir + name):
+                f = open(upload_dir + name)
                 data = f.read()
                 f.close()
             else:
                 msg = "文件不存在!!!"
         if request.POST.has_key("audit"):
             name = request.POST.get('name','')
-            if os.path.isfile(name):
+            if os.path.isfile(upload_dir + name):
                 data = request.POST.get('data','')
-                fp = file(name,'wb')
+                fp = file(upload_dir + name,'wb')
                 fp.write(data)
                 data = ''
                 name = ''
@@ -340,6 +391,8 @@ def audit(request):
             else:
                 msg = "文件不存在!!!"
             Log.objects.create(user=str(user),ip='localhost',saltid='-',logtype='auditfile',cmd=name,execerr=msg,logret='')
+    uploaddir = upload_dir
+    files = os.listdir(upload_dir)
     return render_to_response('audit.html', locals())
 
 @login_required
@@ -448,30 +501,6 @@ def install(request):
     softs = [file for file in os.listdir(install_dir) if os.path.isfile("%s/%s" % (install_dir,file))]
     #softs = [row['soft'] for row in Soft.objects.values('soft')]
     if request.method == 'POST':
-        if request.POST.has_key("installsalt"):
-            port = sshdefaultport
-            host = request.POST.get('host','')
-            username = request.POST.get('username','')
-            passwd = request.POST.get('passwd','')
-            cmd = "Sys_ver=`uname -a|awk -F'el' '{print substr($2,1,1)}'` "
-            cmd += '; [ $Sys_ver -eq 5 ] && sudo rpm -Uvh http://mirrors.sohu.com/fedora-epel/5/x86_64/epel-release-5-4.noarch.rpm \
-                >/dev/null 2>&1'
-            cmd += '; [ $Sys_ver -eq 6 ] && sudo rpm -Uvh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm \
-                >/dev/null 2>&1'
-            cmd += '; sudo yum -y install salt-minion >/dev/null'
-            cmd += '&& sudo sed -i "$ a\master: %s" /etc/salt/minion ' %masterip
-            cmd += '&& sudo sed -i "$ a\id: %s_`hostname`" /etc/salt/minion ' % host
-            cmd += '&& sudo /etc/init.d/salt-minion restart >/dev/null'
-            cmd += "&& echo 'Success'"
-            def sshfc():
-                Deploylog.objects.create(name='salt-minion',ip=host)
-                id = Deploylog.objects.order_by('-id')[0].id
-                ret = ssh(host,port,username,passwd,cmd)
-                print ret
-                endtime = time.strftime("%Y-%m-%d %H:%M:%S")
-                Deploylog.objects.filter(id=id).update(status='已完成',deployret=ret[host],endtime=endtime)
-            threading.Thread(target=sshfc).start()
-            time.sleep(1)
         if request.POST.has_key("install"):
             saltid = request.POST.get('saltid','')
             software = request.POST.get('software','')

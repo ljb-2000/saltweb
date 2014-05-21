@@ -17,10 +17,10 @@ connumret = c.cmd('*','cmd.run',[connumcmd],timeout=5)
 for saltid,load in loadret.items():
     if saltid in saltids:
 	    Monitor.objects.filter(saltid=saltid).update(load=load)
-    else:
-	    Monitor.objects.create(saltid=saltid,load=load)
+    #else:
+	#    Monitor.objects.create(saltid=saltid,load=load)
 for saltid,connum in connumret.items():
     if saltid in saltids:
         Monitor.objects.filter(saltid=saltid).update(connum=connum)
-    else:
-        Monitor.objects.create(saltid=saltid,connum=connum)
+    #else:
+    #    Monitor.objects.create(saltid=saltid,connum=connum)

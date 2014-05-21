@@ -28,5 +28,5 @@ if __name__ == "__main__":
     for i in rets:
         if i[0] in saltids:
             Monitor.objects.filter(saltid=i[0]).update(pingstats=i[2])
-        else:
-            Monitor.objects.create(saltid=i[0],ip=i[1],pingstats=i[2])
+        #else:
+        #    Monitor.objects.create(saltid=i[0],ip=i[1],pingstats=i[2])

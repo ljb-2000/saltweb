@@ -5,6 +5,7 @@ import time,sys
 import salt.client
 import comm, db_connector
 from saltweb.models import *
+from django.core.mail import send_mail
 
 saltids = [row['saltid'] for row in Hosts.objects.values('saltid')]
 c = salt.client.LocalClient()
@@ -33,6 +34,8 @@ for saltid,grain in grains.items():
             update_date = time.strftime("%Y-%m-%d %H:%M:%S")
             Hosts.objects.filter(saltid=saltid).update(ip=ip,cpu=cpu,cpunum=cpunum,mem=mem,hostname=hostname,os=os,update_date=update_date)
             Chagelog.objects.create(saltid=saltid,chage=str(chage))
+            subject=u'Hardware chage ' + saltid
+            send_mail(subject,str(chage),comm.from_mail,comm.samail_list)
     else:
         ips = [row['ip'] for row in Hosts.objects.values('ip')]
         if ip in ips:
@@ -58,3 +61,5 @@ for saltid,vmret in vmrets.items():
                     sn=snret[saltid],disk=diskret[saltid],host_type='实体机',update_date=update_date)
             if ret.model != 'Null':
                 Chagelog.objects.create(saltid=saltid,chage=str(chage))
+                subject=u'Hardware chage ' + saltid
+                send_mail(subject,str(chage),comm.from_mail,comm.samail_list)

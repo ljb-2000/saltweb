@@ -5,13 +5,19 @@
 {% block page-content %}
 <div class="location_div">位置：文件管理 >> 编辑文件  </div>
 <h3>编辑文件</h3>
-说明：请输入绝对路径，如:/tmp/test.txt
+说明：编辑{{ uploaddir }}目录下的文件，请输入相对路径，如:test.txt，如需新增文件请点击文件管理--上传文件<br>
 <form action="" method="post">
 请输入文件:
 <input type="text" name='name' class="span5" placeholder="Type your filename" value={{ name }}> 
 <button type="submit" name="new" class="btn btn-primary btn-sm hostadd_button">提交</button><br>
 {% if msg %}<font color='red'>{{ msg }}</font>{% endif %} <br>
-<textarea rows=18 class="span11" name="data">{{ data }}</textarea><br>
+<textarea rows=15 class="span11" name="data">{{ data }}</textarea><br>
 <button type="submit" name="audit" class="btn btn-primary btn-sm hostadd_button">保存修改</button>
 </form>
+<hr style="border:0;background-color:#ff0000;height:1px;">
+<h3>服务器文件列表</h3>
+说明:{{ uploaddir }}目录文件列表  <br>
+{% for file in files %}
+<li>{{ file }}</li>
+{% endfor %}
 {% endblock %}
