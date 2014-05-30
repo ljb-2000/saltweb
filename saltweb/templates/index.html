@@ -80,7 +80,6 @@
                  <li><a href="{% url 'sysuser' %}">系统用户管理</a></li>
               <li><a href="{% url 'install' %}">自动化部署</a></li>
               <li><a href="{% url 'optlog' %}">操作记录</a></li>
-              <li><a href="{% url 'todo' %}">开发日志</a></li>
               <li><a href="{% url 'groups' %}">分组管理</a></li>
               <li class="dropdown">
                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">文件管理<b class="caret"></b></a>
@@ -100,6 +99,7 @@
                  <li><a href="{% url 'sshcmd' %}">ssh方式</a></li>
                  </ul>
                  </li>
+              <li><a href="{% url 'todo' %}">开发日志</a></li>
             </ul> 
 <ul class="nav navbar-nav pull-right">
         <li><a href="#">欢迎 {{user.username}}</a></li>
@@ -153,7 +153,6 @@
                  <li><a href="{% url 'sysuser' %}">系统用户管理</a></li>
               <li><a href="{% url 'install' %}">自动化部署</a></li>
               <li><a href="{% url 'optlog' %}">操作记录</a></li>
-              <li><a href="{% url 'todo' %}">开发日志</a></li>
               <li><a href="{% url 'groups' %}">分组管理</a></li>
               <li class="dropdown">
                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">文件管理<b class="caret"></b></a>
@@ -173,13 +172,14 @@
                  <li><a href="{% url 'sshcmd' %}">ssh方式</a></li>
                  </ul>
                  </li>
+              <li><a href="{% url 'todo' %}">开发日志</a></li>
             </ul>  
                 </div><!--/.well --> 
             </div><!--/span--> 
         
             <div class="span10"> 
                     {% block page-content %} 
-		    <div class="pull-left span7">
+		    <div class="pull-left span8">
 		    <h2>Welcome to Salt运维管理平台</h2>
 <br>
 <h3>saltweb管理平台介绍</h3>
@@ -187,19 +187,20 @@ saltweb基于django框架开发saltstack的web UI，专门为系统运维人员�
 主要功能包括：主机资产管理、服务器状态监控并邮件报警、图形监控、批量执行命令、批量系统用户管理、批量分发文件、自动化部署、操作记录审计、任务工单系统等<br>
 <br>
 saltweb还在不断的开发和更新，目前已实现以下功能：<br>
-<li>支持WEB界面，所有以以下功能均以在WEB界面上实现</li>
-<li>支持命令批量执行，结果实时返回</li>
-<li>支持远程系统用户管理，增删改用户</li>
-<li>支持批量文件管理，现实在线编辑文件、上传下载文件、文件分发等功能</li>
-<li>支持批量部署（系统初始化、部署LAMP、部署LNMP等）</li>
-<li>支持资产的自动管理，无需手动维护资产列表，自动实现硬件信息收集和更新，包括机器型号、SN号、硬盘、CPU、内存等信息，并且自动记录硬件信息的变动实时查看变更</li>
-<li>支持服务器状态的监控，邮件报警</li>
-<li>支持服务器性能图形监控，根据需求自定义添加图形监控</li>
-<li>支持服务器根据业务和地域划分进行分组管理，亦可动态添加删除被管理服务器</li>
-<li>支持基本的审计功能，可以查看所有的运维操作记录</li>
-<li>支持任务工单系统</li>
+<li>全部WEB界面操作，客户端的部署及管理都能在web界面实现</li>
+<li>命令批量执行，实时返回结果</li>
+<li>系统用户管理，增删改用户普通用户及SA用户</li>
+<li>批量文件管理，现实在线编辑文件、上传下载文件、文件分发等功能</li>
+<li>WEB界面客户端部署</li>
+<li>批量部署（系统初始化、部署LAMP、部署LNMP等）</li>
+<li>资产的自动管理，无需手动维护资产列表，自动实现硬件信息收集和更新，包括机器型号、SN号、硬盘、CPU、内存等信息，并且自动记录硬件的变动实时查看变更信息</li>
+<li>服务器状态的监控，邮件报警</li>
+<li>服务器性能图形监控，根据需求自定义添加图形监控</li>
+<li>根据业务和地域划分进行服务器分组管理，亦可动态添加删除被管理服务器</li>
+<li>基本的审计功能，可查看所有的运维操作记录</li>
+<li>任务工单系统</li>
 <li>用户消息中心</li>
-<br>
+<br><br>
 下个版本将要开发的功能：<br>
 		    </div>
                     {% block page-from %}
