@@ -123,6 +123,13 @@ def monitor1(request):
     return render_to_response('monitor1.html',locals())
 
 @login_required
+def alarm(request):
+    user = request.user
+    msgnum = Msg.objects.filter(isread=0,msgto=user).count()
+    rets = Alarm.objects.order_by('-id')
+    return render_to_response('alarm.html',locals())
+
+@login_required
 def server(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()

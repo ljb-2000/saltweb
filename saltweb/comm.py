@@ -4,7 +4,7 @@
 ####################
 #全局变量
 from_mail = 'saltweb@hhr.com'
-samail_list = ['hhr66@qq.com','huanghuirong@hudong.com']
+samail_list = ['hhr66@qq.com',]
 interval = 7200 #报警间隔
 masterip = '172.16.1.237'
 network_list = ('172.16','192.168','10.0')

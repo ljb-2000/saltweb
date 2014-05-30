@@ -338,3 +338,7 @@ Quit the server with CONTROL-C.
 [21/May/2014 16:42:53] "POST /salt/monitor1/ HTTP/1.1" 200 11552
 [21/May/2014 16:42:53] "GET /static/rrd/172.16.1.238_test1/connum.png HTTP/1.1" 200 12915
 [21/May/2014 16:42:53] "GET /static/rrd/172.16.1.238_test1/load.png HTTP/1.1" 200 12844
+[21/May/2014 16:53:43] "GET /salt/monitor1/ HTTP/1.1" 200 11444
+[21/May/2014 16:53:49] "POST /salt/monitor1/ HTTP/1.1" 200 11552
+[21/May/2014 16:53:49] "GET /static/rrd/172.16.1.238_test1/connum.png HTTP/1.1" 200 12456
+[21/May/2014 16:53:49] "GET /static/rrd/172.16.1.238_test1/load.png HTTP/1.1" 200 12943

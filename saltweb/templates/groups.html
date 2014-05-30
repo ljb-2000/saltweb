@@ -4,7 +4,7 @@
 
 {% block page-content %}
 <div class="location_div">位置：分组管理  </div>
-<h3>添加监控</h3>
+<h3>主机分组</h3>
 说明：<br>
 <form class="form-inline" action="" method="post" style="margin-bottom:0;">
 组名:<input type="text" name='groupname' class="input-small" placeholder="输入组名">
@@ -16,6 +16,16 @@
 </form>
 <table class="table">
 <th>组名</th><th>主机</th>
+{% for k,v in rets.items %}
+<tr>
+    <td>{{k}}</td>
+    <td>{{v}}</td>
+</tr>
+{% endfor %}
+</table>
+<h3>联系人分组</h3>
+<table class="table">
+<th>组名</th><th>联系人</th>
 {% for k,v in rets.items %}
 <tr>
     <td>{{k}}</td>
