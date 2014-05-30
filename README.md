@@ -8,6 +8,9 @@ django 1.6.2<br>
 salt-master 2014.1.0-1<br>
 Python 2.6.6<br>
 
+###saltwebweb管理界面
+![主页](https://github.com/hhr66/saltweb/blob/master/raw/master/%E4%B8%BB%E9%A1%B5.jpg)
+
 ###saltweb部署
 wget --no-check-certificate https://pypi.python.org/packages/source/s/setuptools/setuptools-2.1.tar.gz<br>
 tar zxf setuptools-2.1.tar.gz<br>
