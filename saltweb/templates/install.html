@@ -1,0 +1,41 @@
+{% extends 'index.html' %}
+
+{% block title %}自动化部署{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：自动化部署 </div>
+<h2>自动化部署</h2>
+<div class='row'>
+    <div class='span10'>
+            <form class="form-inline" id="form-execute" action="/salt/install/" method="post" style="margin-bottom:0;">
+		匹配主机<input type="text" class="input-small" value="*" name="saltid">
+                <select name="software">
+                <option>请选择服务</option>
+		{% for soft in softs %}
+                <option>{{ soft }}</option>
+		{% endfor %}
+                </select>   
+                <button type="submit" class="btn" name="install">部署服务</button> <br>
+           </form>
+    </div>
+</div>
+说明：<br>
+点击部署服务在后台执行，需刷新页面查看是否执行完成<br>
+只显示最后的8条记录，查看全部的记录到后台<br><br>
+<table class="table">
+<th>服务</th><th>saltid</th><th>ip地址</th><th>开始时间</th><th>状态</th><th>部署结果</th><th>结束时间</th>
+{% if deployrets %}
+<tr>
+{% for i in deployrets %}
+    <td>{{i.name}}</td>
+    <td>{{i.saltid}}</td>
+    <td>{{i.ip}}</td>
+    <td>{{i.starttime}}</td>
+    <td>{{i.status}}</td>
+    <td>{{i.deployret}}</td>
+    <td>{{i.endtime}}</td>
+</tr>
+{% endfor %}
+{% endif %}
+</table>
+{% endblock %}

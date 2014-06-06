@@ -1,0 +1,16 @@
+[uwsgi]
+socket = :8008
+#http = :8008
+master = true
+chdir = /root/saltweb
+module = django_wsgi
+processes = 4
+listen = 120
+enable-threads = true
+daemonize = /root/saltweb/uwsgi.log
+pidfile = /root/saltweb/uwsgi.pid
+#pythonpath = /home/charles/mysite/mysite
+buffer-size =  32768
+reload-mercy = 4
+vacuum = true
+

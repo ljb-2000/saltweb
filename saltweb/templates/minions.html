@@ -1,0 +1,57 @@
+{% extends 'index.html' %}
+
+{% block title %}minion管理{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：主机管理 >> minion管理 </div>
+<h2>删除minion</h2>
+<div class='row'>
+    <div class='span10'>
+            <form class="form-inline" id="form-execute" action="" method="post" style="margin-bottom:0;">
+<select name="saltid">
+<option>请选择主机</option>
+{% for saltid in saltids %}
+<option>{{ saltid }}</option>
+{% endfor %}
+</select>
+<button type="submit" class="btn" name="del">删除minion</button>
+           </form>
+    </div>
+</div>
+说明：<br>
+由于master自动签名，删除minion分两步完成：
+一、通过salt远程执行命令修改minion配置文件停止minion服务，二、在master上删除minion签名<br>
+删除minion立即生效，资产管理表和主机监控表的记录会被删除<br>
+新增minion需要等待几分钟让系统自动发现新minion后才能从资产管理表和主机监控表中查看到<br>
+<h2>新增minion</h2>
+<div class='row'>
+    <div class='span10'>
+            <form class="form-inline" id="form-execute" action="" method="post" style="margin-bottom:0;">
+IP地址<input type="text" class="input-small" name='host'>
+用户名<input type="text" class="input-small" name='username'>
+密码<input type="text" class="input-small" name='passwd'>
+<button type="submit" class="btn" name="add">部署minion</button>
+           </form>
+    </div>
+</div>
+说明：<br>
+点击部署minion后在后台执行，需刷新页面查看是否执行完成<br>
+部署minion的前提条件，一、免密码的sudo权限用户，二、sudo配置文件中注释掉Default requiretty<br>
+只显示最后的8条记录，查看全部的记录到后台<br><br>
+<table class="table">
+<th>服务</th><th>saltid</th><th>ip地址</th><th>开始时间</th><th>状态</th><th>部署结果</th><th>结束时间</th>
+{% if deployrets %}
+<tr>
+{% for i in deployrets %}
+    <td>{{i.name}}</td>
+    <td>{{i.saltid}}</td>
+    <td>{{i.ip}}</td>
+    <td>{{i.starttime}}</td>
+    <td>{{i.status}}</td>
+    <td>{{i.deployret}}</td>
+    <td>{{i.endtime}}</td>
+</tr>
+{% endfor %}
+{% endif %}
+</table>
+{% endblock %}

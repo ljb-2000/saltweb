@@ -1,0 +1,19 @@
+{% extends 'index.html' %}
+
+{% block title %}监控报警记录{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：监控 >> 监控报警记录  </div>
+<h2>监控报警记录</h2>
+<table class="table">
+<th>Saltid</th><th>To</th><th>报警信息</th><th>时间</th>
+<tr>
+{% for ret in rets %}
+    <td>{{ ret.hostid }}</td> 
+    <td>{{ ret.to }}</td>
+    <td>{{ ret.msg }}</td>
+    <td>{{ ret.nowtime }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

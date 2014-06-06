@@ -1,0 +1,33 @@
+{% extends 'index.html' %}
+
+{% block title %}文件管理{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：文件管理 >> 分发文件  </div>
+<h3>分发文件</h3>
+说明: 文件从{{ uploaddir }}推送到目标主机，目标文件是绝对文件路径，不能是目录路径  <br>
+<form class="form-inline" id="form-execute" action="" method="post" style="margin-bottom:0;">
+<select name="filename">
+<option>请选择文件</option>
+{% for file in files %}<option>{{ file }}</option>{% endfor %}
+</select> 
+<input type="text" class="input-small" value="*" name="saltid">   目标文件
+<input type="text" class="input-max" name='path' placeholder="/tmp/tmp.txt">
+<button type="submit" class="btn" id="execute">执行</button>
+</form>
+{% if rets %}
+分发文件任务执行结果如下：<br>
+{% if execerr %}
+{{ execerr }}<br>
+{% endif %}
+###################<br>
+{% for k,v in rets.items %}
+{% if v %}{{ k }}:{{ v }}{% endif %}<br>
+{% endfor %}
+{% endif %}
+<hr style="border:0;background-color:#ff0000;height:1px;">
+<h3>服务器文件列表</h3>
+{% for file in files %}
+<li>{{ file }}</li>
+{% endfor %}
+{% endblock %}

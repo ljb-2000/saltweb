@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+
+{% block title %}分组管理{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：分组管理  </div>
+<h3>主机分组</h3>
+说明：<br>
+主机saltid和联系人邮箱都是以逗号分开
+<form class="form-inline" action="" method="post" style="margin-bottom:0;">
+组名:<input type="text" name='groupname' class="input-small" placeholder="输入组名">
+主机saltid:<input type="text" name='hosts' class="span3" placeholder="输入主机saltid，逗号分开">
+组联系人:<input type="text" name='contact' class="span3" placeholder="输入联系人，逗号分开">
+<button type="submit" name='add' class="btn">添加分组</button>
+<button type="submit" name='modf' class="btn">修改分组</button>
+<button type="submit" name='del' class="btn">删除分组</button><br>
+{% if msg %}<font color='red'>{{ msg }}</font>{% endif %}
+</form>
+<table class="table">
+<th>组名</th><th>主机</th><th>联系人</th><th>时间</th>
+{% for ret in rets %}
+<tr>
+    <td>{{ret.name}}</td>
+    <td>{{ret.hosts}}</td>
+    <td>{{ret.contact}}</td>
+    <td>{{ret.nowtime}}</td>
+    <td></td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
