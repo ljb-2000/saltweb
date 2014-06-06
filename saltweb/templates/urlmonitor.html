@@ -10,7 +10,8 @@
 工程名:<input type="text" name='proname' class="input-small" placeholder="输入工程名">
 IP地址:<input type="text" name='ip' class="input-small" placeholder="输入ip地址">
 端口号:<input type="text" name='port' class="input-small"placeholder="输入端口号">
-URL:<input type="text" name='urlname' class="span5" placeholder="输入url">
+URL:<input type="text" name='urlname' class="span3" placeholder="输入url">
+负责人:<input type="text" name='contact' class="span2" placeholder="输入负责人邮箱">
 <button type="submit" name='add' class="btn">添加监控</button><br>
 {% if msg %}<font color='red'>{{ msg }}</font>{% endif %}
 <h3>页面监控</h3>
@@ -20,16 +21,17 @@ URL:<input type="text" name='urlname' class="span5" placeholder="输入url">
 <button type="submit" name='updateall' class="btn">戳一下</button>
 </form>
 <table class="table">
-<th>工程名</th><th>域名</th><th>IP地址</th><th>端口</th><th>Url地址</th><th>最后监控时间</th><th>监控结果</th><th>操作</th>
+<th>工程名</th><th>域名</th><th>IP地址</th><th>端口</th><th>Url地址</th><th>负责人</th><th>最后监控时间</th><th>监控结果</th><th>操作</th>
 {% for ret in rets %}
-{% ifequal ret.state '200' %}<tr class="alert-success">{% else %}<tr class="alert-danger">{% endifequal %}
+{% ifequal ret.status '200' %}<tr class="alert-success">{% else %}<tr class="alert-danger">{% endifequal %}
     <td>{{ret.proname}}</td>
     <td>{{ret.domainname}}</td>
     <td>{{ret.ip}}</td>
     <td>{{ret.port}}</td>
     <td>{{ret.urlname}}</td>
-    <td>{{ret.pubtime}}</td>
-    <td>{{ret.state}}</td>
+    <td>{{ret.contact}}</td>
+    <td>{{ret.nowtime}}</td>
+    <td>{{ret.status}}</td>
     <td><a href="{% url "urlupdate" ret.id %}">刷新</a> | <a href="{% url "urldel" ret.id %}">删除</a></td>
 </tr>
 {% endfor %}

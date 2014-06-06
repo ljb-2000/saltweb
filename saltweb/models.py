@@ -42,10 +42,9 @@ class Monitor(Model):
     ip = IPAddressField()
     pingstats = CharField(max_length=10,blank=True)
     saltstats = CharField(max_length=10,blank=True)
-    load = CharField(max_length=50,blank=True)
-    connum = CharField(max_length=100,blank=True)
     num = IntegerField(default=0)
     nowtime = CharField(max_length=100,blank=True)
+    lasttime = CharField(max_length=100,blank=True)
     sendmail = IntegerField(default=0)
     closemail = IntegerField(default=0)
     def __unicode__(self):
@@ -54,12 +53,10 @@ class Monitor(Model):
 class Mastermonitor(Model):
     saltid = CharField(max_length=50,default='saltwebmaster')
     ip = IPAddressField()
-    #pingstats = CharField(max_length=10,blank=True)
-    #saltstats = CharField(max_length=10,blank=True)
-    #load = CharField(max_length=50,blank=True)
-    connum = CharField(max_length=100,blank=True)
+    status = CharField(max_length=10,blank=True)
     num = IntegerField(default=0)
     nowtime = CharField(max_length=100,blank=True)
+    lasttime = CharField(max_length=100,blank=True)
     sendmail = IntegerField(default=0)
     closemail = IntegerField(default=0)
     def __unicode__(self):
@@ -135,8 +132,13 @@ class Url(Model):
     ip = CharField(max_length=50)
     port = IntegerField()
     urlname = CharField(max_length=100)
-    pubtime = DateTimeField(auto_now_add=True)
-    state = CharField(max_length=10)
+    contact = CharField(max_length=100)
+    status = CharField(max_length=10)
+    num = IntegerField(default=0)
+    nowtime = CharField(max_length=100,blank=True)
+    lasttime = CharField(max_length=100,blank=True)
+    sendmail = IntegerField(default=0)
+    closemail = IntegerField(default=0)
     def __unicode__(self):
         return self.proname
 
@@ -169,3 +171,11 @@ class Alarm(Model):
     nowtime = DateTimeField(auto_now_add=True)
     def __unicode__(self):
         return self.hostid
+
+class Group(Model):
+    name = CharField(max_length=50)
+    hosts = CharField(max_length=500)
+    contact = CharField(max_length=500)
+    nowtime = DateTimeField(auto_now_add=True)
+    def __unicode__(self):
+        return self.name

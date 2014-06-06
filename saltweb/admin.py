@@ -12,10 +12,10 @@ class HostsAdmin(admin.ModelAdmin):
 class UsersAdmin(admin.ModelAdmin):
     list_display = ('username','passwd')
 class MonitorAdmin(admin.ModelAdmin):
-    list_display = ('saltid','ip','pingstats','saltstats','load','connum','num','nowtime','sendmail','closemail')
+    list_display = ('saltid','ip','pingstats','saltstats','num','nowtime','lasttime','sendmail','closemail')
     ordering = ('saltstats',)
 class MastermonitorAdmin(admin.ModelAdmin):
-    list_display = ('saltid','ip','connum','num','nowtime','sendmail','closemail')
+    list_display = ('saltid','ip','num','status','nowtime','lasttime','sendmail','closemail')
 class UploadAdmin(admin.ModelAdmin):
     list_display = ('name','file')
 class LogAdmin(admin.ModelAdmin):
@@ -23,7 +23,6 @@ class LogAdmin(admin.ModelAdmin):
     ordering = ('-alter_time',)
 class TodoAdmin(admin.ModelAdmin):
     list_display = ('user', 'todo', 'priority', 'flag', 'pubtime')
-    #list_filter = ('pubtime',)
     ordering = ('-pubtime',)
 class MonitortypeAdmin(admin.ModelAdmin):
     list_display = ('name','alias')
@@ -33,8 +32,8 @@ class MsgAdmin(admin.ModelAdmin):
     list_display = ('msgfrom','msgto','title','content','isread','pubtime')
     ordering = ('-pubtime',)
 class UrlAdmin(admin.ModelAdmin):
-    list_display = ('proname','domainname','ip','prot','url','pubtime','state')
-    ordering = ('-pubtime',)
+    list_display = ('proname','domainname','ip','port','urlname','contact','status','num','nowtime','lasttime','sendmail','closemail')
+    ordering = ('-nowtime',)
 class DeploylogAdmin(admin.ModelAdmin):
     list_display = ('name','saltid','ip','starttime','status','deployret','endtime')
     ordering = ('-id',)
@@ -43,6 +42,9 @@ class AlarmAdmin(admin.ModelAdmin):
     ordering = ('-id',)
 class MonionslogAdmin(admin.ModelAdmin):
     list_display = ('name','saltid','ip','starttime','status','deployret','endtime')
+    ordering = ('-id',)
+class GroupAdmin(admin.ModelAdmin):
+    list_display = ('name','hosts','contact','nowtime')
     ordering = ('-id',)
 
 admin.site.register(Pro_type)
@@ -58,7 +60,8 @@ admin.site.register(Monitortype,MonitortypeAdmin)
 admin.site.register(Chagelog,ChagelogAdmin)
 admin.site.register(Address)
 admin.site.register(Msg,MsgAdmin)
-admin.site.register(Url)
+admin.site.register(Url,UrlAdmin)
 admin.site.register(Deploylog,DeploylogAdmin)
 admin.site.register(Alarm,AlarmAdmin)
 admin.site.register(Monionslog,MonionslogAdmin)
+admin.site.register(Group,GroupAdmin)

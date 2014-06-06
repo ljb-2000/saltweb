@@ -53,6 +53,7 @@ def logout(request):
 def monitor(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
+    masterstatus = Mastermonitor.objects.get(id=1).status
     up = Monitor.objects.filter(saltstats='True').count()
     down = Monitor.objects.filter(saltstats='False').count()
     total = Monitor.objects.count() 
@@ -76,6 +77,9 @@ def monitor(request):
     id = request.GET.get('id',)
     closemail = request.GET.get('closemail',)
     Monitor.objects.filter(id=id).update(closemail=closemail)
+    allclosemail = request.GET.get('allclosemail',)
+    if allclosemail:
+        Monitor.objects.all().update(closemail=allclosemail)
     return render_to_response('monitor.html',locals())
 
 @login_required
@@ -235,12 +239,13 @@ def urlmonitor(request):
         if request.POST.has_key("add"):
             proname = request.POST.get('proname','')
             urlname = request.POST.get('urlname','')
+            contact = request.POST.get('contact','')
             ip = request.POST.get('ip','')
             port = request.POST.get('port','')
             r = curl(urlname,ip,port)
             proname = proname + '-' + ip
             if not Url.objects.filter(proname=proname) and urlname.startswith('http://'):
-                Url.objects.create(proname=proname,ip=ip,port=port,urlname=urlname,domainname=r[0],state=r[1])
+                Url.objects.create(proname=proname,contact=contact,ip=ip,port=port,urlname=urlname,domainname=r[0],status=r[1])
             else: 
                 msg = '工程名已存在或者url地址不是以http开头'
         if request.POST.has_key("search"):
@@ -251,7 +256,7 @@ def urlmonitor(request):
                 return render_to_response('urlmonitor.html',locals())
         if request.POST.has_key("updateall"):
            os.popen('python %ssaltweb/urlmonitor.py' % base_dir) 
-    rets = Url.objects.order_by("-state")
+    rets = Url.objects.order_by("-status")
     return render_to_response('urlmonitor.html',locals())
 
 def urlupdate(request,id=''):
@@ -260,8 +265,8 @@ def urlupdate(request,id=''):
     ip = ret.ip
     port = ret.port
     r = curl(urlname,ip,port)
-    pubtime = time.strftime("%Y-%m-%d %H:%M:%S")
-    Url.objects.filter(id=id).update(domainname=r[0],state=r[1],pubtime=pubtime)
+    nowtime = time.strftime("%Y-%m-%d %X")
+    Url.objects.filter(id=id).update(domainname=r[0],status=r[1],nowtime=nowtime)
     return HttpResponseRedirect('/salt/urlmonitor/')    
 
 def urldel(request,id=''):
@@ -281,21 +286,22 @@ def saltcmd(request):
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
     dangercmd = ",".join(dangercmdlist)
     if request.method == 'POST':	
-    	c = salt.client.LocalClient()
+        c = salt.client.LocalClient()
         saltid = request.POST.get('saltid','')
         fun = request.POST.get('fun','')
         cmd = request.POST.get('cmd','')
         type = request.POST.get('type','')
         minions = c.run_job(saltid,'cmd.run',['echo'],expr_form=type)['minions']
-        print minions
         dangercmds = [i for i in dangercmdlist if i in cmd]
-	if not dangercmds:
+        if not dangercmds:
             ret1 = c.cmd(saltid,fun,[cmd],expr_form=type,timeout=99)
             execerr = list(set(minions).difference(set(ret1.keys())))
             total = len(minions)
             errnum = len(execerr)
             execerr = 'total:%d errnum:%d errret:%s' % (total,errnum,','.join(execerr))
-	Log.objects.create(user=str(user),ip='-',saltid=saltid,logtype=fun,cmd=cmd,execerr=execerr,logret=ret1)
+        else:
+            execerr = ret1 = '包含危险命令%s关键字，禁止执行' % str(dangercmdlist)    
+        Log.objects.create(user=str(user),ip='-',saltid=saltid,logtype=fun,cmd=cmd,execerr=execerr,logret=ret1)
     return render_to_response('saltcmd.html',locals())
 
 @login_required
@@ -674,18 +680,28 @@ def msg(request):
         msgtitle = request.POST['msgtitle']
         content = request.POST['content']
         Msg.objects.create(msgfrom=user,msgto=username,title=msgtitle,content=content)
+    id = request.GET.get('id',)
+    delmsg = request.GET.get('delmsg',)
+    if delmsg:
+        Msg.objects.filter(id=id).delete()
+    readmsg = request.GET.get('readmsg',)
+    if readmsg:
+        Msg.objects.filter(id=id).update(isread=1)
+        msgnum = Msg.objects.filter(isread=0,msgto=user).count()
+    isread = request.GET.get('isread',)
+    if isread:
+        ret = Msg.objects.get(id=id)
+        Msg.objects.filter(id=id).update(isread=1)
+        msgnum = Msg.objects.filter(isread=0,msgto=user).count()
+        return render_to_response('readmsg.html',locals())
+    allreadmsg = request.GET.get('allreadmsg',)
+    if allreadmsg:
+        Msg.objects.filter(msgto=str(user)).update(isread=1)
+        msgnum = Msg.objects.filter(isread=0,msgto=user).count()
+    alldelmsg = request.GET.get('alldelmsg',)
+    if alldelmsg:
+        Msg.objects.filter(msgto=str(user)).delete()
     return render_to_response('msg.html',locals())
-
-def readmsg(request, id=''):
-    user = request.user
-    ret = Msg.objects.get(id=id)
-    Msg.objects.filter(id=id).update(isread=1)
-    msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    return render_to_response('readmsg.html',locals())
-
-def delmsg(request, id=''):
-    Msg.objects.filter(id=id).delete()
-    return HttpResponseRedirect('/salt/msg/')
 
 @login_required
 def groups(request):
@@ -694,17 +710,22 @@ def groups(request):
     if request.method == 'POST':
         groupname = request.POST['groupname']
         hosts = request.POST['hosts']
+        contact = request.POST['contact']
         if request.POST.has_key("add"):
-            os.popen('echo "    %s: %s" >> %s' % (groupname,hosts,groupsconf))
+            if not Group.objects.filter(name=groupname):
+                os.popen('echo "    %s: %s" >> %s' % (groupname,hosts,groupsconf))
+                Group.objects.create(name=groupname,hosts=hosts,contact=contact)
+            else:
+                msg = "组名已经存在"
         if request.POST.has_key("modf"):
-            os.popen('sed -i "s/%s:.*/%s: %s/" %s' % (groupname,groupname,hosts,groupsconf))
+            if Group.objects.filter(name=groupname):
+                os.popen('sed -i "s/%s:.*/%s: %s/" %s' % (groupname,groupname,hosts,groupsconf))
+                nowtime = time.strftime("%Y-%m-%d %H:%M:%S")
+                Group.objects.filter(name=groupname).update(hosts=hosts,contact=contact,nowtime=nowtime)
+            else:
+                msg = "组名不存在"
         if request.POST.has_key("del"):
             os.popen('sed -i "/%s:.*/d" %s' % (groupname,groupsconf))
-    a = file(groupsconf).readlines()
-    a.remove('nodegroups:\n')
-    rets = {}
-    for i in a:
-        groupname = i.rstrip('\n').strip().split(':')[0]
-        hosts = i.rstrip('\n').strip().split(':')[1]
-        rets[groupname] = hosts
+            Group.objects.filter(name=groupname).delete()
+    rets = Group.objects.all()
     return render_to_response('groups.html',locals())
