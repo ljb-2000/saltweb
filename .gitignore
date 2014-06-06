@@ -2,3 +2,5 @@
 *.db
 *.swp
 *.swo
+*.log
+*.pid
