@@ -12,11 +12,11 @@ master salt-master状态：{% ifequal masterstatus 'down' %}<font color='red'>{{
 <th>Saltid</th><th>IP</th><th>主机状态</th><th>Salt状态</th><th>报警状态</th><th><a href="?allclosemail=1">全部关闭</a>
 <a href="?allclosemail=0">全部开启</a></th>
 {% for i in posts %}
-{% ifequal i.saltstats 'False' %}<tr class="alert-danger">{% else %}<tr class="alert-success">{% endifequal %}
+{% ifequal i.saltstatus 'False' %}<tr class="alert-danger">{% else %}<tr class="alert-success">{% endifequal %}
     <td>{{ i.saltid }}</td> 
     <td>{{ i.ip }}</td>
-    <td>{{ i.pingstats }}</td>
-    <td>{{ i.saltstats }}</td>
+    <td>{{ i.pingstatus }}</td>
+    <td>{{ i.saltstatus }}</td>
     <td>{% ifequal i.closemail 0 %}开启{% else %}关闭{% endifequal %}</td>
     <td><a href="?id={{ i.id }}&&closemail=1">关闭</a>
         <a href="?id={{ i.id }}&&closemail=0">开启</a></td>

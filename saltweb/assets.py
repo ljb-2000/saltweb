@@ -31,9 +31,9 @@ for saltid,grain in grains.items():
         if mem != int(ret.mem):chage['mem']='%s > %s' % (ret.mem,mem)
         if hostname != ret.hostname:chage['hostname']='%s > %s' % (ret.hostname,hostname)
         if chage:
-            update_date = time.strftime("%Y-%m-%d %H:%M:%S")
-            Hosts.objects.filter(saltid=saltid).update(ip=ip,cpu=cpu,cpunum=cpunum,mem=mem,hostname=hostname,os=os,update_date=update_date)
-            Chagelog.objects.create(saltid=saltid,chage=str(chage))
+            nowtime = time.strftime("%Y-%m-%d %H:%M:%S")
+            Hosts.objects.filter(saltid=saltid).update(ip=ip,cpu=cpu,cpunum=cpunum,mem=mem,hostname=hostname,os=os,nowtime=nowtime)
+            Chagelog.objects.create(saltid=saltid,ip=ip,chage=str(chage))
             subject=u'Hardware chage ' + saltid
             send_mail(subject,str(chage),comm.from_mail,comm.samail_list)
     else:
@@ -56,10 +56,12 @@ for saltid,vmret in vmrets.items():
         if snret[saltid] != ret.sn:chage['sn']='%s > %s' % (ret.sn,snret[saltid])
         if diskret[saltid] != ret.disk:chage['disk']='%s > %s' % (ret.disk,diskret[saltid])
         if chage:
-            update_date = time.strftime("%Y-%m-%d %H:%M:%S")
+            nowtime = time.strftime("%Y-%m-%d %H:%M:%S")
             Hosts.objects.filter(saltid=saltid).update(model=modelret[saltid],
-                    sn=snret[saltid],disk=diskret[saltid],host_type='实体机',update_date=update_date)
+                    sn=snret[saltid],disk=diskret[saltid],host_type='实体机',nowtime=nowtime)
             if ret.model != 'Null':
-                Chagelog.objects.create(saltid=saltid,chage=str(chage))
+                ip = Hosts.objects.get(saltid=saltid).ip
+                print ip
+                Chagelog.objects.create(saltid=saltid,ip=ip,chage=str(chage))
                 subject=u'Hardware chage ' + saltid
                 send_mail(subject,str(chage),comm.from_mail,comm.samail_list)

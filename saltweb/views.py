@@ -54,8 +54,8 @@ def monitor(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
     masterstatus = Mastermonitor.objects.get(id=1).status
-    up = Monitor.objects.filter(saltstats='True').count()
-    down = Monitor.objects.filter(saltstats='False').count()
+    up = Monitor.objects.filter(saltstatus='True').count()
+    down = Monitor.objects.filter(saltstatus='False').count()
     total = Monitor.objects.count() 
     ONE_PAGE_OF_DATA = pagelimit
     curPage = int(request.GET.get('curPage', '1'))
@@ -67,7 +67,7 @@ def monitor(request):
         curPage -= 1
     startPos = (curPage - 1) * ONE_PAGE_OF_DATA
     endPos = startPos + ONE_PAGE_OF_DATA
-    posts = Monitor.objects.order_by("saltstats")[startPos:endPos]
+    posts = Monitor.objects.order_by("saltstatus")[startPos:endPos]
     if curPage == 1 and allPage == 1: 
         allPostCounts = Monitor.objects.count()
         allPage = allPostCounts / ONE_PAGE_OF_DATA
@@ -82,49 +82,6 @@ def monitor(request):
         Monitor.objects.all().update(closemail=allclosemail)
     return render_to_response('monitor.html',locals())
 
-@login_required
-def monitor1(request):
-    user = request.user
-    msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    saltids = [row['saltid'] for row in Hosts.objects.values('saltid')]
-    typerets = Monitortype.objects.all()
-    monitortypes = [row['name'] for row in Monitortype.objects.values('name')]
-    host = ''
-    start = ''
-    times = ''
-    if request.method == 'POST':
-        host = request.POST.get('host',)
-        type = request.POST.get('type',)
-        times = request.POST.get('time',)
-        if request.POST.has_key("rrdcreate"):
-            rrdfile = rrd_dir + host + '/'+ type + '.rrd'
-            if not os.path.exists(rrdfile):
-                rrdcreate1(rrdfile,rrdstep)
-        if request.POST.has_key("rrddel"):
-            rrdpic = rrdpic_dir + host + '/' + type + '.png'
-            rrdfile = rrd_dir + host + '/'+ type + '.rrd'
-            if os.path.exists(rrdfile):
-                os.remove(rrdfile)
-            if os.path.exists(rrdpic):
-                os.remove(rrdpic)
-        if not os.path.isdir(rrdpic_dir + host):
-            os.makedirs(rrdpic_dir + host)
-        if not os.path.isdir(rrd_dir + host):
-            os.makedirs(rrd_dir + host)
-        #if not host: host = localhostid
-        start = 'N-%s' % times
-        rrdfilelist = os.listdir(rrd_dir + host)
-        for i in rrdfilelist:
-            type = os.path.splitext(i)[0]
-            rrdfile1 = rrd_dir + host + '/' + i
-            pic1 = rrdpic_dir + host + '/' + type + '.png'
-            if not times:start = 'N-3600'
-            title1 = host + ' ' + type
-            data1 = str(type)
-            vertical = ''
-            rrdgraph1(pic1,rrdfile1,start,title1,data1,vertical)
-        graphlist = os.listdir(rrdpic_dir + host)
-    return render_to_response('monitor1.html',locals())
 
 @login_required
 def alarm(request):
@@ -133,19 +90,6 @@ def alarm(request):
     rets = Alarm.objects.order_by('-id')
     return render_to_response('alarm.html',locals())
 
-@login_required
-def server(request):
-    user = request.user
-    msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    posts = []
-    if request.method == 'POST':
-        saltid = request.POST.get('saltid',)
-        type = request.POST.get('type',)
-        c = salt.client.LocalClient()
-        minions = c.run_job(saltid,'cmd.run',['echo'],expr_form=type)['minions']
-        for saltid in minions:
-            posts.append(Monitor.objects.filter(saltid=saltid))
-    return render_to_response('server.html',locals())
 
 @login_required
 def assets(request):
@@ -171,7 +115,7 @@ def assets(request):
 
         startPos = (curPage - 1) * ONE_PAGE_OF_DATA
         endPos = startPos + ONE_PAGE_OF_DATA
-        posts = Hosts.objects.order_by("-update_date")[startPos:endPos]
+        posts = Hosts.objects.order_by("-nowtime")[startPos:endPos]
         if curPage == 1 and allPage == 1: 
             allPostCounts = Hosts.objects.count()
             allPage = allPostCounts / ONE_PAGE_OF_DATA
@@ -244,8 +188,9 @@ def urlmonitor(request):
             port = request.POST.get('port','')
             r = curl(urlname,ip,port)
             proname = proname + '-' + ip
+            nowtime = time.strftime("%Y-%m-%d %X")
             if not Url.objects.filter(proname=proname) and urlname.startswith('http://'):
-                Url.objects.create(proname=proname,contact=contact,ip=ip,port=port,urlname=urlname,domainname=r[0],status=r[1])
+                Url.objects.create(proname=proname,contact=contact,ip=ip,port=port,urlname=urlname,domainname=r[0],nowtime=nowtime,status=r[1])
             else: 
                 msg = '工程名已存在或者url地址不是以http开头'
         if request.POST.has_key("search"):
@@ -254,30 +199,38 @@ def urlmonitor(request):
                 pronames = [row['proname'] for row in Url.objects.values('proname')]
                 rets = [Url.objects.get(proname=i) for i in pronames if re in i]
                 return render_to_response('urlmonitor.html',locals())
-        if request.POST.has_key("updateall"):
-           os.popen('python %ssaltweb/urlmonitor.py' % base_dir) 
+    #    if request.POST.has_key("updateall"):
+    #       os.popen('python %ssaltweb/urlmonitor.py' % base_dir) 
+    updateall = request.GET.get('updateall',)
+    if updateall:
+        os.popen('python %ssaltweb/urlmonitor.py' % base_dir)
+    id = request.GET.get('id',)
+    urlupdate = request.GET.get('urlupdate',)
+    urldel = request.GET.get('urldel',)
+    closemail = request.GET.get('closemail',)
+    allclosemail = request.GET.get('allclosemail',)
+    if urlupdate:
+        ret = Url.objects.get(id=id)
+        urlname = ret.urlname
+        ip = ret.ip
+        port = ret.port
+        r = curl(urlname,ip,port)
+        nowtime = time.strftime("%Y-%m-%d %X")
+        Url.objects.filter(id=id).update(domainname=r[0],status=r[1],nowtime=nowtime)
+    if urldel:
+        Url.objects.filter(id=id).delete()
+    if allclosemail:
+        Url.objects.all().update(closemail=allclosemail)
+    if closemail:
+        Url.objects.filter(id=id).update(closemail=closemail)
     rets = Url.objects.order_by("-status")
     return render_to_response('urlmonitor.html',locals())
-
-def urlupdate(request,id=''):
-    ret = Url.objects.get(id=id)
-    urlname = ret.urlname
-    ip = ret.ip
-    port = ret.port
-    r = curl(urlname,ip,port)
-    nowtime = time.strftime("%Y-%m-%d %X")
-    Url.objects.filter(id=id).update(domainname=r[0],status=r[1],nowtime=nowtime)
-    return HttpResponseRedirect('/salt/urlmonitor/')    
-
-def urldel(request,id=''):
-    Url.objects.filter(id=id).delete()
-    return HttpResponseRedirect('/salt/urlmonitor/')
 
 @login_required
 def chagelog(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    rets = Chagelog.objects.order_by("-updatetime")
+    rets = Chagelog.objects.order_by("-nowtime")
     return render_to_response('chagelog.html',locals())
 
 @login_required
@@ -552,7 +505,7 @@ def optlog(request):
 
     startPos = (curPage - 1) * ONE_PAGE_OF_DATA
     endPos = startPos + ONE_PAGE_OF_DATA
-    posts = Log.objects.filter(user=user).order_by('-alter_time')[startPos:endPos]
+    posts = Log.objects.filter(user=user).order_by('-nowtime')[startPos:endPos]
     if curPage == 1 and allPage == 1: 
         allPostCounts = Log.objects.filter(user=user).count()
         allPage = allPostCounts / ONE_PAGE_OF_DATA
@@ -586,95 +539,51 @@ def ajax_test(request):
     return HttpResponse(message)
 
 @login_required
-def todolist(request):
+def todo(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
+    id = request.GET.get('id',)
+    delete = request.GET.get('delete',)
+    finish = request.GET.get('finish',)
+    back = request.GET.get('back',)
+    edit = request.GET.get('edit',)
+    add = request.GET.get('add',)
+    if finish:
+        Todo.objects.filter(id=id).update(flag=0)
+    if back:
+        Todo.objects.filter(id=id).update(flag=1)
+    if delete:
+        Todo.objects.filter(id=id).delete()
+    if edit:
+        if request.method == 'POST':
+            atodo = request.POST['todo']
+            priority = request.POST['priority']
+            todo = Todo.objects.filter(id=id).update(todo=atodo,priority=priority)
+            return HttpResponseRedirect('/salt/todo/')
+        else:
+            todo = Todo.objects.get(id=id)
+            return render_to_response("updatetodo.html",locals())
+    if add:
+        if request.method == 'POST':
+            atodo = request.POST['todo']
+            priority = request.POST['priority']
+            todo = Todo.objects.create(user=user, todo=atodo, priority=priority, flag='1')
+            return HttpResponseRedirect('/salt/todo/')   
+        else:
+            return render_to_response('addtodo.html',locals())     
     todolist = Todo.objects.filter(flag=1)
     #todolist = Todo.objects.filter(flag=1).order_by('-pubtime')
     finishtodos = Todo.objects.filter(flag=0)
     #finishtodos = Todo.objects.filter(flag=0).order_by('-pubtime')
-    return render_to_response('simpleTodo.html',locals())
+    return render_to_response('todo.html',locals())
                                                         
-def todofinish(request, id=""):
-    user = request.user
-    msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    todo = Todo.objects.get(id=id)
-    if todo.flag == "1":
-        todo.flag = '0'
-        todo.save()
-        return HttpResponseRedirect('/salt/todo/')
-    todolist = Todo.objects.filter(flag=1)
-    finishtodos = Todo.objects.filter(flag=0)
-    return render_to_response('simpleTodo.html',locals())
-                                                        
-def todoback(request, id=""):
-    user = request.user
-    msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    todo = Todo.objects.get(id=id)
-    if todo.flag == '0':
-        todo.flag = 1
-        todo.save()
-        return HttpResponseRedirect('/salt/todo/')
-    todolist = Todo.objects.filter(flag=1)
-    finishtodos = Todo.objects.filter(flag=0)
-    return render_to_response('simpleTodo.html',locals())
-                                                        
-def tododelete(request, id=""):
-    user = request.user
-    msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    try:
-        todo = Todo.objects.get(id=id)
-    except Exception:
-        raise  Http404
-                                                        
-    if todo:
-        todo.delete()
-        return HttpResponseRedirect('/salt/todo/')
-    todolist = Todo.objects.filter(flag=1)
-    finishtodos = Todo.objects.filter(flag=0)
-    return render_to_response('simpleTodo.html',locals())
-                                                        
-def todoadd(request):
-    user = request.user
-    msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    if request.method == 'POST':
-        atodo = request.POST['todo']
-        priority = request.POST['priority']
-        todo = Todo(user=user, todo=atodo, priority=priority, flag='1')
-        todo.save()
-        return HttpResponseRedirect('/salt/todo/')
-    else:
-        return render_to_response('addTodo.html',locals())
-                                                            
-                                                            
-def todoupdate(request, id=''):
-    user = request.user
-    msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    if request.method == 'POST':
-        atodo = request.POST['todo']
-        priority = request.POST['priority']
-        todo = Todo.objects.filter(id=id).update(todo=atodo,priority=priority)
-        return HttpResponseRedirect('/salt/todo/')
-    else:
-        todo = Todo.objects.get(id=id)
-        return render_to_response("updateTodo.html",locals())
-
-def address(request):
-    UNRULY_PASSENGERS = [146,184,235,200,226,251,299,273,281,304,203]
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=unruly.csv'
-    writer = csv.writer(response)
-    writer.writerow(['Year', 'Unruly Airline Passengers'])
-    for (year, num) in zip(range(1995, 2006), UNRULY_PASSENGERS):
-        writer.writerow([year, num])
-    return response
 
 @login_required
 def msg(request):
     user = request.user
     users = User.objects.all()
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    rets = Msg.objects.filter(msgto=user).order_by("-pubtime")
+    rets = Msg.objects.filter(msgto=user).order_by("-nowtime")
     if request.method == 'POST':
         username = request.POST['user']
         msgtitle = request.POST['msgtitle']

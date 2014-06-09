@@ -12,7 +12,7 @@
 {% for ret in rets %}
     <td>{{ ret.msgfrom }}</td> 
    <td><a href="?id={{ ret.id }}&&isread=1">{% ifequal ret.isread 0 %}<b>{% endifequal %}{{ ret.title }}</a></td> 
-    <td>{{ ret.pubtime }}</td>
+    <td>{{ ret.nowtime }}</td>
     <td><a href="?id={{ ret.id }}&&readmsg=1">已读</a>  <a href="?id={{ ret.id }}&&delmsg=1">删除</a></td>
 </tr>
 {% endfor %}

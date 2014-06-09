@@ -4,3 +4,5 @@
 *.swo
 *.log
 *.pid
+*.out
+*.bak

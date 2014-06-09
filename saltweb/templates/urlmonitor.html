@@ -18,10 +18,9 @@ URL:<input type="text" name='urlname' class="span3" placeholder="输入url">
 说明：服务器每隔5分钟会自动监控所有项目，查看最新监控结果请刷新页面<br> 
 <input type="text" name='searchproname' class="input-small" placeholder="工程名">
 <button type="submit" name='search' class="btn">搜索</button>
-<button type="submit" name='updateall' class="btn">戳一下</button>
 </form>
 <table class="table">
-<th>工程名</th><th>域名</th><th>IP地址</th><th>端口</th><th>Url地址</th><th>负责人</th><th>最后监控时间</th><th>监控结果</th><th>操作</th>
+<th>工程名</th><th>域名</th><th>IP地址</th><th>端口</th><th>Url地址</th><th>负责人</th><th>最后监控时间</th><th>监控结果</th><th>报警状态</th><th><a href="?updateall=1">全部刷新</a> <a href="?allclosemail=1">全部关闭</a> <a href="?allclosemail=0">全部开启</a> </th>
 {% for ret in rets %}
 {% ifequal ret.status '200' %}<tr class="alert-success">{% else %}<tr class="alert-danger">{% endifequal %}
     <td>{{ret.proname}}</td>
@@ -32,7 +31,8 @@ URL:<input type="text" name='urlname' class="span3" placeholder="输入url">
     <td>{{ret.contact}}</td>
     <td>{{ret.nowtime}}</td>
     <td>{{ret.status}}</td>
-    <td><a href="{% url "urlupdate" ret.id %}">刷新</a> | <a href="{% url "urldel" ret.id %}">删除</a></td>
+    <td>{% ifequal ret.closemail 0 %}开启{% else %}关闭{% endifequal %}</td>
+    <td><a href="?id={{ ret.id }}&&urlupdate=1">刷新</a> | <a href="?id={{ ret.id }}&&closemail=1">关闭监控</a> | <a href="?id={{ ret.id }}&&closemail=0">开启监控</a> | <a href="?id={{ ret.id }}&&urldel=1">删除</a></td>
 </tr>
 {% endfor %}
 </table>

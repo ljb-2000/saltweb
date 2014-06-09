@@ -7,5 +7,5 @@ import comm, db_connector
 from saltweb.models import *
 
 Hosts.objects.all().delete()
-Monitortype.objects.all().delete()
+#Monitortype.objects.all().delete()
 Mastermonitor.objects.all().delete()

@@ -41,10 +41,10 @@ uwsgicmd = 'uwsgi --ini %suwsgi.ini' % comm.base_dir
 mastercmd = '/etc/init.d/salt-master start'
 phpfpmcmd = '/etc/init.d/php-fpm start'
 nginxcmd = '/etc/init.d/nginx start'
-saltcroncmd = 'python %ssaltcron.py &' % comm.script_dir
+saltcroncmd = 'python %ssalt_cron.py &' % comm.script_dir
 SimpleHTTPServercmd = 'cd %s ;nohup python -m SimpleHTTPServer >/tmp/t.out 2>&1 &' % comm.upload_dir
 #services = {'uwsgi':uwsgicmd,'salt-master':mastercmd,'salt-minion':minioncmd,'php-fpm':phpfpmcmd,'nginx':nginxcmd,'saltcron':saltcroncmd}
-services = {'uwsgi':uwsgicmd,'salt-master':mastercmd,'php-fpm':phpfpmcmd,'nginx':nginxcmd,'saltcron':saltcroncmd,'SimpleHTTPServer':SimpleHTTPServercmd}
+services = {'uwsgi':uwsgicmd,'salt-master':mastercmd,'php-fpm':phpfpmcmd,'nginx':nginxcmd,'salt_cron':saltcroncmd,'SimpleHTTPServer':SimpleHTTPServercmd}
 try:
     if sys.argv[1].startswith('restart') and sys.argv[1] != 'restart':
         servicename = sys.argv[1].replace('restart','')

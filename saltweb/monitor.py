@@ -10,10 +10,10 @@ import comm, db_connector
 from django.core.mail import send_mail
 from saltweb.models import *
 
+if not Mastermonitor.objects.filter(id=1):
+    Mastermonitor.objects.create(ip='%s' % comm.masterip)
 c = salt.client.LocalClient()
 try:
-    if not Mastermonitor.objects.filter(id=1):
-        Mastermonitor.objects.create(ip='%s',status='up' % comm.masterip)
     rets = c.cmd('*','test.ping')
     Mastermonitor.objects.filter(id=1).update(status='up')
 except:
@@ -51,23 +51,23 @@ for saltid in newlist:
         snret = c.cmd(saltid,'cmd.run',[sncmd],timeout=5)
         diskcmd = "fdisk -l 2>/dev/null|egrep '^Disk /dev/'|awk '{print $3,$4}'"
         diskret = c.cmd(saltid,'cmd.run',[diskcmd],timeout=5)
-        update_date = time.strftime("%Y-%m-%d %H:%M:%S")
+        nowtime = time.strftime("%Y-%m-%d %H:%M:%S")
         Hosts.objects.filter(saltid=saltid).update(model=modelret[saltid],
-        sn=snret[saltid],disk=diskret[saltid],host_type='实体机',update_date=update_date)
+        sn=snret[saltid],disk=diskret[saltid],host_type='实体机',nowtime=nowtime)
 for down in downlist:
     rets[down] =  'False'
 if oldlist:
     saltids = [r['saltid'] for r in Hosts.objects.values('saltid')] #如果删除minion则重新生成
     rets = c.cmd('*','test.ping')
-for saltid,saltstats in rets.items():
+for saltid,saltstatus in rets.items():
     ip = Hosts.objects.get(saltid=saltid).ip
     if saltid in saltids:
         num = 0
         nowtime = time.strftime("%Y-%m-%d %X")
         if not Monitor.objects.filter(saltid=saltid):
-            Monitor.objects.create(saltid=saltid,ip=ip,saltstats=str(saltstats),nowtime=nowtime)
-        if str(saltstats) == 'False':
-            print str(saltstats)
+            Monitor.objects.create(saltid=saltid,ip=ip,saltstatus=str(saltstatus),nowtime=nowtime)
+        if str(saltstatus) == 'False':
+            print str(saltstatus)
             num = Monitor.objects.filter(saltid=saltid)[0].num
             num +=1
             print num
@@ -76,18 +76,18 @@ for saltid,saltstats in rets.items():
                 num = 0
                 sendmail = 1
                 lasttime = time.strftime("%Y-%m-%d %X")
-                Monitor.objects.filter(saltid=saltid).update(saltstats=str(saltstats),num=num,nowtime=nowtime,lasttime=lasttime,sendmail=sendmail)
+                Monitor.objects.filter(saltid=saltid).update(saltstatus=str(saltstatus),num=num,nowtime=nowtime,lasttime=lasttime,sendmail=sendmail)
             if num > 3 and int(time.mktime(time.strptime(nowtime, '%Y-%m-%d %X'))) > int(time.mktime(time.strptime(lasttime, '%Y-%m-%d %X'))) + comm.interval:
                 num = 0
                 sendmail = 1
                 lasttime = time.strftime("%Y-%m-%d %X")
-                Monitor.objects.filter(saltid=saltid).update(saltstats=str(saltstats),num=num,nowtime=nowtime,lasttime=lasttime,sendmail=sendmail)
-            Monitor.objects.filter(saltid=saltid).update(saltstats=str(saltstats),num=num,nowtime=nowtime)
+                Monitor.objects.filter(saltid=saltid).update(saltstatus=str(saltstatus),num=num,nowtime=nowtime,lasttime=lasttime,sendmail=sendmail)
+            Monitor.objects.filter(saltid=saltid).update(saltstatus=str(saltstatus),num=num,nowtime=nowtime)
         else:
-            Monitor.objects.filter(saltid=saltid).update(saltstats=str(saltstats),num=num,nowtime=nowtime)
+            Monitor.objects.filter(saltid=saltid).update(saltstatus=str(saltstatus),num=num,nowtime=nowtime)
 downhostlist = [i.saltid for i in Monitor.objects.filter(sendmail=1,closemail=0)]
 if downhostlist:
-    msg = u'CRITICAL: host saltstats down'
+    msg = u'CRITICAL: host saltstatus down'
     send_mail(msg,str(downhostlist),comm.from_mail,comm.samail_list)
     Alarm.objects.create(hostid=str(downhostlist),msg=msg,to=comm.samail_list)
     Monitor.objects.all().update(sendmail=0)

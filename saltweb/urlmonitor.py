@@ -36,10 +36,15 @@ for ret in rets:
         Url.objects.filter(proname=proname).update(status=str(status),num=0,nowtime=nowtime)
 errs = [i.proname for i in Url.objects.filter(sendmail=1,closemail=0)]
 if errs:
-    msg = u'CRITICAL: url monitor fail'
-    send_mail(msg,str(errs),comm.from_mail,comm.samail_list)
-    Alarm.objects.create(hostid=str(errs),msg=msg,to=comm.samail_list)
-    users = [row['username'] for row in User.objects.values('username')]
-    for user in users:
-        Msg.objects.create(msgfrom='systemmonitor',msgto=user,title=msg,content=str(errs))
-    Url.objects.all().update(sendmail=0)
+    for err in errs:
+        maillist = Url.objects.filter(proname=err)[0].contact.split(',')
+        maillist.extend(comm.samail_list)
+        status = Url.objects.filter(proname=err)[0].status
+        msg = u'CRITICAL: url monitor fail %s status %s' % (err,status)
+        print msg
+        send_mail(msg,"",comm.from_mail,comm.samail_list)
+        Alarm.objects.create(hostid=str(errs),msg=msg,to=maillist)
+        users = [row['username'] for row in User.objects.values('username')]
+        for user in users:
+            Msg.objects.create(msgfrom='systemmonitor',msgto=user,title=msg,content="")
+        Url.objects.filter(proname=err).update(sendmail=0)
