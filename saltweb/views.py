@@ -257,8 +257,6 @@ def urlmonitor(request):
                 pronames = [row['proname'] for row in Url.objects.values('proname')]
                 rets = [Url.objects.get(proname=i) for i in pronames if re in i]
                 return render_to_response('urlmonitor.html',locals())
-    #    if request.POST.has_key("updateall"):
-    #       os.popen('python %ssaltweb/urlmonitor.py' % base_dir) 
     updateall = request.GET.get('updateall',)
     if updateall:
         os.popen('python %ssaltweb/urlmonitor.py' % base_dir)
@@ -370,7 +368,6 @@ def upload(request):
             if upform.cleaned_data['file'].size > 5000000:
                 ret = "File size no larger than 5M ,Upload Fail !!!"
             else:
-                #print upform.cleaned_data['file'].size
                 fp = file(upload_dir + upform.cleaned_data['file'].name,'wb')
                 for chunk in upform.cleaned_data['file'].chunks():
                     fp.write(chunk)
@@ -390,24 +387,26 @@ def upload(request):
 	upform = upfileForm()
 	downform = downfileForm()
     uploaddir = upload_dir
-    files = os.listdir(upload_dir)
+    #files = os.listdir(upload_dir)
+    files = os.popen('cd %s ;find . -type f' % upload_dir).read().strip("./").strip("\n").split('\n./')
     return render_to_response('upload.html', locals())
 
 @login_required
-def audit(request):
+def editfile(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
     if request.method == 'POST':
         if request.POST.has_key("new"):
-            name = request.POST.get('name','')
+            name = request.POST.get('name','').strip()
             if os.path.isfile(upload_dir + name):
                 f = open(upload_dir + name)
                 data = f.read()
+                print data
                 f.close()
             else:
                 msg = "文件不存在!!!"
-        if request.POST.has_key("audit"):
-            name = request.POST.get('name','')
+        if request.POST.has_key("edit"):
+            name = request.POST.get('name','').strip()
             if os.path.isfile(upload_dir + name):
                 data = request.POST.get('data','')
                 filename = upload_dir + name
@@ -419,16 +418,17 @@ def audit(request):
                 msg = "修改成功!!!"
             else:
                 msg = "文件不存在!!!"
-            Log.objects.create(user=str(user),ip='localhost',saltid='-',logtype='auditfile',cmd=filename,execerr=msg,logret='')
+            Log.objects.create(user=str(user),ip='localhost',saltid='-',logtype='editfile',cmd=filename,execerr=msg,logret='')
     uploaddir = upload_dir
-    files = os.listdir(upload_dir)
-    return render_to_response('audit.html', locals())
+    files = os.popen('cd %s ;find . -type f' % upload_dir).read().strip("./").strip("\n").split('\n./')
+    return render_to_response('editfile.html', locals())
 
 @login_required
 def syncfile(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    files = [file for file in os.listdir(upload_dir) if os.path.isfile("%s/%s" % (upload_dir,file))]
+    #files = [file for file in os.listdir(upload_dir) if os.path.isfile("%s/%s" % (upload_dir,file))]
+    files = os.popen('cd %s ;find . -type f' % upload_dir).read().strip("./").strip("\n").split('\n./')
     if os.system("/etc/init.d/salt-master status >/dev/null") != 0:
         msg = "salt-master服务未启动"
     elif request.method == 'POST':
@@ -511,9 +511,6 @@ def sysuser(request):
                 total = len(minions)
                 errnum = len(execerr)
                 execerr = 'total:%d errnum:%d errret:%s' % (total,errnum,','.join(execerr))
-                #if username == 'root':
-                #    for i in ret1.keys():
-                #        Hosts.objects.filter(saltid=i).update(passwd=passwd)
                 if username in users:
                     Users.objects.filter(username=username).update(passwd=passwd)
                 else:
@@ -527,11 +524,8 @@ def sysuser(request):
 def install(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
-    #ips = [row['ip'] for row in Hosts.objects.values('ip')]
     install_dir = upload_dir + 'install'
-    #files = os.listdir(install_dir)
     softs = [file for file in os.listdir(install_dir) if os.path.isfile("%s/%s" % (install_dir,file))]
-    #softs = [row['soft'] for row in Soft.objects.values('soft')]
     if os.system("/etc/init.d/salt-master status >/dev/null") != 0:
         msg = "salt-master服务未启动"
     elif request.method == 'POST':
@@ -592,20 +586,6 @@ def memcached_test(request):
     else:
         return HttpResponse(result)
 
-def testpage(request):
-    return render_to_response('load.html',locals())
-
-def ajax_test(request):
-    user = request.user 
-    username = 'feilong'
-    if request.method == 'GET':
-        username = request.GET['username']
-    if username == 'feilong':
-        message = "no"
-    else: 
-        message = "yes"
-    return HttpResponse(message)
-
 @login_required
 def todo(request):
     user = request.user
@@ -638,7 +618,7 @@ def todo(request):
             todo = Todo.objects.create(user=user, todo=atodo, priority=priority, flag='1')
             return HttpResponseRedirect('/salt/todo/')   
         else:
-            return render_to_response('addtodo.html',locals())     
+            return render_to_response('updatetodo.html',locals())     
     todolist = Todo.objects.filter(flag=1)
     #todolist = Todo.objects.filter(flag=1).order_by('-pubtime')
     finishtodos = Todo.objects.filter(flag=0)

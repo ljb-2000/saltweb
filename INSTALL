@@ -40,7 +40,7 @@ sed -i 's/^user.*/user   root;/' /etc/nginx/nginx.conf
 cat << EOF > /etc/nginx/conf.d/virtual.conf
 server {
     listen          80;
-    server_name    www.hhr.com;
+    server_name    www.saltweb.com;
     charset utf-8;
     index index.html index.htm index.php;
     access_log  /var/log/nginx/hhr.access.log;
@@ -62,4 +62,4 @@ python /root/saltweb/saltweb/salt_service.py start
 python /root/saltweb/saltweb/salt_service.py status
 
 ###测试
-修改本机host，添加"172.16.1.237 www.hhr.com",访问http://www.hhr.com/salt
+修改本机host，添加"172.16.1.237 www.saltweb.com",访问http://www.saltweb.com/salt

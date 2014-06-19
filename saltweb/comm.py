@@ -2,7 +2,7 @@
 #coding=utf-8
 #author: hhr
 ####################
-#全局变量
+#全局常量
 from_mail = 'saltweb@hhr.com'
 samail_list = ['hhr66@qq.com',]
 interval = 7200 #报警间隔
@@ -13,8 +13,6 @@ dangercmdlist = ('rm','reboot','init ','shutdown')
 download_url = 'http://%s:8000/' % masterip
 base_dir = '/root/saltweb/'
 script_dir = '%ssaltweb/' % base_dir
-#rrd_dir = '%srrdtool/' % base_dir
-#rrdpic_dir = '%ssaltweb/static/rrd/' % base_dir
 upload_dir = '%supload/' % base_dir
 sshdefaultport = 50718
 thread_num = 20
