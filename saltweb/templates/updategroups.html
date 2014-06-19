@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+
+{% block title %}分组管理{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：分组管理  </div>
+<h3>主机分组</h3>
+说明：<br>
+主机saltid和联系人邮箱都是以逗号分开
+<form class="form-inline" action="" method="post" style="margin-bottom:0;">
+组名:<input type="text" name='name' class="input-small" value="{{ret.name}}">
+机saltid:<input type="text" name='hosts' class="span3" value="{{ret.hosts}}">
+组联系人:<input type="text" name='contact' class="span3" value="{{ret.contact}}">
+<button type="submit" name='edit' class="btn">修改分组</button>
+{% if msg %}<font color='red'>{{ msg }}</font>{% endif %}
+</form>
+{% endblock %}

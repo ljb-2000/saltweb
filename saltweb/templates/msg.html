@@ -21,6 +21,7 @@
 <form action="" method="post">
 <select name="user">
 <option>请选择用户</option>
+<option value='all'>所有用户</option>
 {% for u in users %}
 {% ifnotequal user u %}<option>{{ u.username }}</option>{% endifnotequal %}
 {% endfor %}

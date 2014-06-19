@@ -13,13 +13,13 @@ dangercmdlist = ('rm','reboot','init ','shutdown')
 download_url = 'http://%s:8000/' % masterip
 base_dir = '/root/saltweb/'
 script_dir = '%ssaltweb/' % base_dir
-rrd_dir = '%srrdtool/' % base_dir
-rrdpic_dir = '%ssaltweb/static/rrd/' % base_dir
+#rrd_dir = '%srrdtool/' % base_dir
+#rrdpic_dir = '%ssaltweb/static/rrd/' % base_dir
 upload_dir = '%supload/' % base_dir
 sshdefaultport = 50718
 thread_num = 20
 rrdstep = 120 
-groupsconf = '/etc/salt/master.d/group.conf'
+groupsconf = '/etc/salt/group.conf'
 dbname = 'saltweb'
 dbuser = 'root'
 dbpasswd = '123'
@@ -33,7 +33,7 @@ def ssh(ip,port,user,passwd,cmd):
     except:
         return {ip:"Error: connect fail !!!"}
     try:
-        stdin, stdout, stderr = ssh.exec_command(cmd)
+        stdin, stdout, stderr = ssh.exec_command("export LANG=en_US.UTF-8 ; %s" % cmd)
     except:
         return {ip:"Error: exec fail !!!"}
     i = stderr.readlines()
@@ -111,4 +111,19 @@ def curl(url,ip,port):
     newurl = output[0]+"://"+ipport+output[2]
     domainname = output[1].split(':')[0]
     ret = os.popen("curl --connect-timeout 3 -s -I -H 'Host: %s' '%s'|head -1|awk '{print $2}'" %(domainname,newurl) ).read().strip('\n')
+    if not ret: ret = "down"
     return [domainname,ret]
+
+def cmdminion(host):
+    cmd = "Sys_ver=`uname -a|awk -F'el' '{print substr($2,1,1)}'`;"
+    cmd += "rpm -q epel-release >/dev/null;"
+    cmd += "num=$?;"
+    cmd += '[ $num -ne 0 ] && [ $Sys_ver -eq 5 ] && sudo rpm -Uvh http://mirrors.sohu.com/fedora-epel/5/x86_64/epel-release-5-4.noarch.rpm >/dev/null 2>&1;'
+    cmd += '[ $num -ne 0 ] && [ $Sys_ver -eq 6 ] && sudo rpm -Uvh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm >/dev/null 2>&1;'
+    cmd += 'rpm -q salt-minion >/dev/null || sudo yum -y install salt-minion >/dev/null 2>&1'
+    cmd += '&& sudo sed -i "$ a\master: %s" /etc/salt/minion ' % masterip
+    cmd += '&& sudo sed -i "$ a\id: %s_`hostname`" /etc/salt/minion ' % host
+    cmd += '&& sudo rm -f /etc/salt/pki/minion/minion_master.pub'
+    cmd += '&& sudo /etc/init.d/salt-minion restart >/dev/null'
+    cmd += "&& echo 'Success'"
+    return cmd

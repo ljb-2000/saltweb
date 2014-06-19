@@ -74,10 +74,10 @@ class Log(Model):
     def __unicode__(self):
         return self.saltid
 
-class Soft(Model):
-    soft = CharField(max_length=50)
-    def __unicode__(self):
-        return self.soft
+#class Soft(Model):
+#    soft = CharField(max_length=50)
+#    def __unicode__(self):
+#        return self.soft
 
 class Todo(Model):
     user = ForeignKey(User)
@@ -141,7 +141,7 @@ class Deploylog(Model):
     def __unicode__(self):
         return self.name
 
-class Monionslog(Model):
+class Minionslog(Model):
     name = CharField(max_length=50)
     ip = CharField(max_length=50)
     saltid = CharField(max_length=50)
@@ -153,7 +153,7 @@ class Monionslog(Model):
         return self.name
 
 class Alarm(Model):
-    hostid = CharField(max_length=50)
+    hostid = CharField(max_length=1000)
     msg = CharField(max_length=500)
     to = CharField(max_length=50)
     nowtime = DateTimeField(auto_now_add=True)

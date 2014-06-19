@@ -6,3 +6,4 @@
 *.pid
 *.out
 *.bak
+*.test.py

@@ -5,6 +5,7 @@
 {% block page-content %}
 <div class="location_div">位置：资产管理  </div>
 <h2>主机资产信息</h2>
+说明：备注栏信息需要在后台手动添加，可添加如raid信息、服务器供应商等信息<br>
 <form class="form-inline" action="" method="post" style="margin-bottom:0;">
 <select name="host">
 <option>请选择主机</option>
@@ -29,7 +30,7 @@
     <td>{{ip.model}}</td>
     <td>{{ip.sn}}</td>
     <td>{{ip.disk}}</td>
-    <td>{{ip.update_date}}</td> 
+    <td>{{ip.nowtime}}</td> 
     <td>{{ip.mark}}</td> 
 </tr>
 {% endfor %}

@@ -15,6 +15,7 @@
 <input type="text" class="input-max" name='path' placeholder="/tmp/tmp.txt">
 <button type="submit" class="btn" id="execute">执行</button>
 </form>
+{% if msg %}<font color='red'>{{ msg }}</font><br>{% endif %}
 {% if rets %}
 分发文件任务执行结果如下：<br>
 {% if execerr %}

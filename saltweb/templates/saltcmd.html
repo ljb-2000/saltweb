@@ -27,6 +27,8 @@
            </form>
     </div>
 </div>
+{% if msg %}<font color='red'>{{ msg }}</font><br>{% endif %}
+注意：命令中不能包含危险命令({{ dangercmd }})
 <br>
 <div id="result" onchange="$('#progress_stop').hide()" style="height:400px;#c3c3c3;background-color:black;color:white;overflow-y:auto;" class="well">
 {% if execerr %}
@@ -37,8 +39,6 @@
     ########{{ k }}########<br>
     {{ v|escape|linebreaksbr  }} <br>
 {% endfor %}
-{% else %}
-注意：命令中不能包含危险命令({{ dangercmd }})
 {% endif %}
 </table>
 </div>

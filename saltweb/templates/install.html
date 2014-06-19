@@ -19,17 +19,16 @@
            </form>
     </div>
 </div>
-说明：<br>
-点击部署服务在后台执行，需刷新页面查看是否执行完成<br>
-只显示最后的8条记录，查看全部的记录到后台<br><br>
+{% if msg %}<font color='red'>{{ msg }}</font><br>{% endif %}
+说明：点击部署服务在后台执行，需刷新页面查看是否执行完成<br>
+只显示最后的8条记录，查看全部的记录到后台<br>
 <table class="table">
-<th>服务</th><th>saltid</th><th>ip地址</th><th>状态</th><th>部署结果</th><th>开始时间</th><th>结束时间</th>
+<th>服务</th><th>saltid</th><th>状态</th><th>部署结果</th><th>开始时间</th><th>结束时间</th>
 {% if deployrets %}
 <tr>
 {% for i in deployrets %}
     <td>{{i.name}}</td>
     <td>{{i.saltid}}</td>
-    <td>{{i.ip}}</td>
     <td>{{i.status}}</td>
     <td>{{i.deployret}}</td>
     <td>{{i.starttime}}</td>

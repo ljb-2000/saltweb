@@ -36,7 +36,8 @@
 确认密码:<input type="password" class="input-small" name='passwd1' placeholder="passwd">
 <input type="submit" name='chpasswd' value="执行">
 </form>
-<br>
+<hr style="border:0;background-color:#ff0000;height:1px;">
+{% if msg %}<font color='red'>{{ msg }}</font><br>{% endif %}
 <div id="result" onchange="$('#progress_stop').hide()" style="height:400px;#c3c3c3;background-color:black;color:white;overflow-y:auto;" class="well">
 {% if execerr %}
 {{ execerr }}<br>

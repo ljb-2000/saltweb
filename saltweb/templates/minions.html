@@ -10,6 +10,7 @@
             <form class="form-inline" id="form-execute" action="" method="post" style="margin-bottom:0;">
 <select name="saltid">
 <option>请选择主机</option>
+<option value='all'>所有主机</option>
 {% for saltid in saltids %}
 <option>{{ saltid }}</option>
 {% endfor %}
@@ -24,6 +25,7 @@
 删除minion立即生效，资产管理表和主机监控表的记录会被删除<br>
 新增minion需要等待几分钟让系统自动发现新minion后才能从资产管理表和主机监控表中查看到<br>
 <h2>新增minion</h2>
+<h3>单台添加</h3>
 <div class='row'>
     <div class='span10'>
             <form class="form-inline" id="form-execute" action="" method="post" style="margin-bottom:0;">
@@ -34,10 +36,23 @@ IP地址<input type="text" class="input-small" name='host'>
            </form>
     </div>
 </div>
+<h3>批量添加</h3>
+<div class='row'>
+    <div class='span10'>
+            <form class="form-inline" action="" method="post" style="margin-bottom:0;">
+IPlist<input type="text" class="input" name='hosts'>
+用户名<input type="text" class="input-small" name='username'>
+密码<input type="text" class="input-small" name='passwd'>
+<button type="submit" class="btn" name="madd">批量部署minion</button>
+           </form>
+    </div>
+</div>
 说明：<br>
+批量添加格式：连续的ip用“-”表示，不连续的ip用逗号分开，例172.16.1.1-11或者172.16.1.1,172.16.1.2 <br>
 点击部署minion后在后台执行，需刷新页面查看是否执行完成<br>
 部署minion的前提条件，一、免密码的sudo权限用户，二、sudo配置文件中注释掉Default requiretty<br>
-只显示最后的8条记录，查看全部的记录到后台<br><br>
+只显示最后的8条记录，查看全部的记录到后台<br>
+{% if msg %}<font color='red'>{{ msg }}</font><br>{% endif %}
 <table class="table">
 <th>服务</th><th>saltid</th><th>ip地址</th><th>开始时间</th><th>状态</th><th>部署结果</th><th>结束时间</th>
 {% if deployrets %}

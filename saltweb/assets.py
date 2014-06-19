@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 #coding=utf-8
 #author: hhr
-import time,sys
+import time,sys,os
 import salt.client
 import comm, db_connector
 from saltweb.models import *
 from django.core.mail import send_mail
+
+
+code = os.system("/etc/init.d/salt-master status >/dev/null")
+if code != 0: sys.exit()
 
 saltids = [row['saltid'] for row in Hosts.objects.values('saltid')]
 c = salt.client.LocalClient()

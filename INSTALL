@@ -18,19 +18,19 @@ pip install uwsgi
 pip install apscheduler paramiko
 sed -i 's/\(.*\)HAVE_DECL_MPZ_POWM_SEC/#\1HAVE_DECL_MPZ_POWM_SEC/' /usr/lib64/python2.6/site-packages/Crypto/Util/number.py
 sed -i 's/\(.*\)mpz_powm_sec/#\1mpz_powm_sec/' /usr/lib64/python2.6/site-packages/Crypto/Util/number.py
-mkdir /etc/salt/master.d
-cat << EOF > /etc/salt/master.d/group.conf
+cat << EOF > /etc/salt/group.conf
 nodegroups:
     master: testgroups
 EOF
 echo "auto_accept: True" >>/etc/salt/master
-grep "^default_include: master.d/\*\.conf" /etc/salt/master >/dev/null 2>&1|| echo "default_include: master.d/*.conf" >> /etc/salt/master
-
+grep "^default_include: ./*.conf" /etc/salt/master >/dev/null 2>&1|| echo "default_include: ./*.conf" >> /etc/salt/master
 
 /etc/init.d/mysqld start
 chkconfig mysqld on
 mysqladmin -uroot password 123
 mysql -uroot -p123 -e "create database saltweb default charset utf8"
+
+修改comm.py中的masterip和base_dir等常量信息
 
 ./manage.py syncdb 
 注：第一次执行syncdb会提示创建超级管理员，该账号为saltweb的登录账号及后台超级管理员

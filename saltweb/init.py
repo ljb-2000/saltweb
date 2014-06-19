@@ -7,5 +7,16 @@ import comm, db_connector
 from saltweb.models import *
 
 Hosts.objects.all().delete()
-#Monitortype.objects.all().delete()
+Monitor.objects.all().delete()
+Alarm.objects.all().delete()
+Chagelog.objects.all().delete()
+Deploylog.objects.all().delete()
+Group.objects.all().delete()
+Log.objects.all().delete()
+Minions.objects.all().delete()
 Mastermonitor.objects.all().delete()
+Msg.objects.all().delete()
+Todo.objects.all().delete()
+Upload.objects.all().delete()
+Url.objects.all().delete()
+Users.objects.all().delete()

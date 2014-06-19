@@ -40,7 +40,7 @@ class DeploylogAdmin(admin.ModelAdmin):
 class AlarmAdmin(admin.ModelAdmin):
     list_display = ('hostid','msg','to','nowtime')
     ordering = ('-id',)
-class MonionslogAdmin(admin.ModelAdmin):
+class MinionslogAdmin(admin.ModelAdmin):
     list_display = ('name','saltid','ip','starttime','status','deployret','endtime')
     ordering = ('-id',)
 class GroupAdmin(admin.ModelAdmin):
@@ -54,7 +54,7 @@ admin.site.register(Monitor,MonitorAdmin)
 admin.site.register(Mastermonitor,MastermonitorAdmin)
 admin.site.register(Upload,UploadAdmin)
 admin.site.register(Log,LogAdmin)
-admin.site.register(Soft)
+#admin.site.register(Soft)
 admin.site.register(Todo,TodoAdmin)
 #admin.site.register(Monitortype,MonitortypeAdmin)
 admin.site.register(Chagelog,ChagelogAdmin)
@@ -63,5 +63,5 @@ admin.site.register(Msg,MsgAdmin)
 admin.site.register(Url,UrlAdmin)
 admin.site.register(Deploylog,DeploylogAdmin)
 admin.site.register(Alarm,AlarmAdmin)
-admin.site.register(Monionslog,MonionslogAdmin)
+admin.site.register(Minionslog,MinionslogAdmin)
 admin.site.register(Group,GroupAdmin)

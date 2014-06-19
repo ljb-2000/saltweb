@@ -34,17 +34,18 @@ for ret in rets:
         Url.objects.filter(proname=proname).update(status=str(status),num=num,nowtime=nowtime)
     else:
         Url.objects.filter(proname=proname).update(status=str(status),num=0,nowtime=nowtime)
-errs = [i.proname for i in Url.objects.filter(sendmail=1,closemail=0)]
-if errs:
-    for err in errs:
-        maillist = Url.objects.filter(proname=err)[0].contact.split(',')
-        maillist.extend(comm.samail_list)
-        status = Url.objects.filter(proname=err)[0].status
-        msg = u'CRITICAL: url monitor fail %s status %s' % (err,status)
-        print msg
-        send_mail(msg,"",comm.from_mail,comm.samail_list)
-        Alarm.objects.create(hostid=str(errs),msg=msg,to=maillist)
-        users = [row['username'] for row in User.objects.values('username')]
-        for user in users:
-            Msg.objects.create(msgfrom='systemmonitor',msgto=user,title=msg,content="")
-        Url.objects.filter(proname=err).update(sendmail=0)
+#errs = [i.proname for i in Url.objects.filter(sendmail=1,closemail=0)]
+#if errs:
+for i in Url.objects.filter(sendmail=1,closemail=0):
+    errproname = i.proname
+    #for err in errs:
+    maillist = Url.objects.filter(proname=errproname)[0].contact.split(',')
+    maillist.extend(comm.samail_list)
+    status = Url.objects.filter(proname=errproname)[0].status
+    msg = u'CRITICAL: url monitor fail %s status %s' % (errproname,status)
+    send_mail(msg,"",comm.from_mail,maillist)
+    Alarm.objects.create(hostid=str(errproname),msg=msg,to=maillist)
+    users = [row['username'] for row in User.objects.values('username')]
+    for user in users:
+        Msg.objects.create(msgfrom='systemmonitor',msgto=user,title=msg,content="")
+    Url.objects.filter(proname=errproname).update(sendmail=0)
