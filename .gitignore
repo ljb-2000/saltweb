@@ -6,4 +6,4 @@
 *.pid
 *.out
 *.bak
-/saltweb/saltweb/test.py
+/saltweb/test.py
