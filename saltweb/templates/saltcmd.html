@@ -28,8 +28,9 @@
     </div>
 </div>
 {% if msg %}<font color='red'>{{ msg }}</font><br>{% endif %}
-注意：命令中不能包含危险命令({{ dangercmd }})
-<br>
+注意：命令中不能包含危险命令({{ dangercmd }})<br>
+命令尽量使用全路径，因为minion服务的启动如果是通过sudo命令则家目录是普通用户<br>
+可以通过执行pwd命令查看到所在家目录，直接执行ls命令的话查看到的是普通用户家目录下的文件<br>
 <div id="result" onchange="$('#progress_stop').hide()" style="height:400px;#c3c3c3;background-color:black;color:white;overflow-y:auto;" class="well">
 {% if execerr %}
 {{ execerr }}<br>

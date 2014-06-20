@@ -9,3 +9,6 @@ Defaults requiretty修改为 #Defaults requiretty， 表示不需要控制终端
 
 3. ssh执行命令报错utf8' codec can't decode byte 0xc4 in position 4: invalid continuation byte
 原因：minion端的编码不是utf8导致
+
+4. Data truncated for column 'execerr' at row 1
+原因：execerr的字符串长度超出了数据库模型中设置长度

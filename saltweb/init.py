@@ -6,6 +6,7 @@ import threading
 import comm, db_connector
 from saltweb.models import *
 
+os.system('salt-key -D -y')
 Hosts.objects.all().delete()
 Monitor.objects.all().delete()
 Alarm.objects.all().delete()

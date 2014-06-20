@@ -7,8 +7,8 @@ from saltweb.comm import *
 
 #非root账号密码表，所有服务器账号密码统一
 class Users(Model):
-    username = CharField(max_length=50,default='hhr')
-    passwd = CharField(max_length=50,default='123')
+    username = CharField(max_length=50)
+    passwd = CharField(max_length=50)
 
 class Hosts(Model):
     saltid = CharField(max_length=50)
@@ -16,11 +16,8 @@ class Hosts(Model):
     ip = IPAddressField(unique=True)
     port = IntegerField(default=sshdefaultport)
     host_type = CharField(max_length=50,default='虚拟机')
-    #user = CharField(max_length=50,default='root')
-    #passwd = CharField(max_length=50,default='123')
     os = CharField(max_length=50)
     mem = CharField(max_length=50)
-    #protocol_type = ForeignKey(Pro_type)
     cpu = CharField(max_length=50,blank=True)
     cpunum = IntegerField()
     model = CharField(max_length=50,default='Null')
@@ -68,16 +65,12 @@ class Log(Model):
     ip = CharField(max_length=50)
     logtype = CharField(max_length=50)
     cmd = CharField(max_length=255)
-    execerr = CharField(max_length=255)
+    execerr = CharField(max_length=1000)
     logret = TextField(max_length=1000)
     nowtime = DateTimeField(auto_now_add=True)
     def __unicode__(self):
         return self.saltid
 
-#class Soft(Model):
-#    soft = CharField(max_length=50)
-#    def __unicode__(self):
-#        return self.soft
 
 class Todo(Model):
     user = ForeignKey(User)
@@ -90,11 +83,6 @@ class Todo(Model):
     class Meta:
         ordering = ['priority', 'nowtime']
 
-#class Monitortype(Model):
-#    name = CharField(max_length=50)
-#    alias = CharField(max_length=50)
-#    def __unicode__(self):
-#        return self.name
 
 class Chagelog(Model):
     saltid = CharField(max_length=50)
