@@ -54,9 +54,9 @@ def monitor(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
     masterstatus = Mastermonitor.objects.get(id=1).status
-    up = Monitor.objects.filter(saltstatus='True').count()
-    down = Monitor.objects.filter(saltstatus='False').count()
-    total = Monitor.objects.count() 
+    up = Hosts.objects.filter(saltstatus='True').count()
+    down = Hosts.objects.filter(saltstatus='False').count()
+    total = Hosts.objects.count() 
     ONE_PAGE_OF_DATA = pagelimit
     curPage = int(request.GET.get('curPage', '1'))
     allPage = int(request.GET.get('allPage','1'))
@@ -67,19 +67,19 @@ def monitor(request):
         curPage -= 1
     startPos = (curPage - 1) * ONE_PAGE_OF_DATA
     endPos = startPos + ONE_PAGE_OF_DATA
-    posts = Monitor.objects.order_by("saltstatus")[startPos:endPos]
+    posts = Hosts.objects.order_by("saltstatus")[startPos:endPos]
     if curPage == 1 and allPage == 1: 
-        allPostCounts = Monitor.objects.count()
+        allPostCounts = Hosts.objects.count()
         allPage = allPostCounts / ONE_PAGE_OF_DATA
         remainPost = allPostCounts % ONE_PAGE_OF_DATA
         if remainPost > 0:
                 allPage += 1
     id = request.GET.get('id',)
     closemail = request.GET.get('closemail',)
-    Monitor.objects.filter(id=id).update(closemail=closemail)
+    Hosts.objects.filter(id=id).update(closemail=closemail)
     allclosemail = request.GET.get('allclosemail',)
     if allclosemail:
-        Monitor.objects.all().update(closemail=allclosemail)
+        Hosts.objects.all().update(closemail=allclosemail)
     return render_to_response('monitor.html',locals())
 
 
@@ -146,10 +146,12 @@ def minions(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
     saltids = [row['saltid'] for row in Hosts.objects.order_by("saltid").values('saltid')]
+    c = salt.client.LocalClient()
     if os.system("/etc/init.d/salt-master status >/dev/null") != 0:
         msg = "salt-master服务未启动"
+    elif request.method != 'POST':
+        minions = sorted(c.run_job('*','cmd.run',['echo'],expr_form='glob')['minions'])
     elif request.method == 'POST':
-        c = salt.client.LocalClient()
         port = sshdefaultport
         username = request.POST.get('username','')
         passwd = request.POST.get('passwd','')
@@ -193,12 +195,14 @@ def minions(request):
                 Minionslog.objects.create(name='add_minion',ip=host)
                 id = Minionslog.objects.order_by('-id')[0].id
                 ret = ssh(host,port,username,passwd,cmd)
+                if "Success" in ret[host]:
+                    saltid = ret[host].split()[1]
+                    Hosts.objects.create(saltid=saltid,ip=host,saltstatus='False')
                 endtime = time.strftime("%Y-%m-%d %H:%M:%S")
                 Minionslog.objects.filter(id=id).update(status='已完成',deployret=ret[host],endtime=endtime)
             threading.Thread(target=sshfc,args=(host,)).start()
             time.sleep(1)   
         if request.POST.has_key("del"):
-            minions = c.run_job('*','cmd.run',['echo'],expr_form='glob')['minions']
             saltid = request.POST.get('saltid','') 
             Minionslog.objects.create(name='del_minion',saltid=saltid)
             id = Minionslog.objects.order_by('-id')[0].id
@@ -209,7 +213,6 @@ def minions(request):
                 ret = c.cmd("*",'cmd.run',[cmd],timeout=5)
                 os.system('salt-key -D -y' )
                 Hosts.objects.all().delete()
-                Monitor.objects.all().delete()
                 endtime = time.strftime("%Y-%m-%d %H:%M:%S")
                 execerr = list(set(minions).difference(set(ret.keys())))
                 total = len(minions)
@@ -230,7 +233,7 @@ def minions(request):
                 ret = 'Error: minion 宕机或者salt-minion服务未开启'
             os.system('salt-key -d %s -y' % saltid )
             Hosts.objects.filter(saltid=saltid).delete()
-            Monitor.objects.filter(saltid=saltid).delete()
+            Hosts.objects.filter(saltid=saltid).delete()
             endtime = time.strftime("%Y-%m-%d %H:%M:%S")
             Minionslog.objects.filter(id=id).update(status='已完成',deployret=ret,endtime=endtime)
             Log.objects.create(user=str(user),ip='-',saltid=saltid,logtype='del_minion',execerr=ret)

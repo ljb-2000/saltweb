@@ -7,3 +7,4 @@
 *.out
 *.bak
 /saltweb/test.py
+*.bak

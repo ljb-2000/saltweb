@@ -6,14 +6,14 @@ from saltweb.models import *
 from saltweb.models import Todo
 
 class HostsAdmin(admin.ModelAdmin):
-    list_display = ('saltid','ip','hostname','port','host_type','mem','os','sn','model','disk','nowtime','mark')
+    list_display = ('saltid','ip','hostname','host_type','mem','os','sn','model','disk','updatetime','mark','pingstatus','saltstatus','num','nowtime','lasttime','sendmail','closemail')
     ordering = ('nowtime',)
     search_fields = ('saltid', 'hostname')
 class UsersAdmin(admin.ModelAdmin):
     list_display = ('username','passwd')
-class MonitorAdmin(admin.ModelAdmin):
-    list_display = ('saltid','ip','pingstatus','saltstatus','num','nowtime','lasttime','sendmail','closemail')
-    ordering = ('saltstatus',)
+#class MonitorAdmin(admin.ModelAdmin):
+#    list_display = ('saltid','ip','pingstatus','saltstatus','num','nowtime','lasttime','sendmail','closemail')
+#    ordering = ('saltstatus',)
 class MastermonitorAdmin(admin.ModelAdmin):
     list_display = ('saltid','ip','num','status','nowtime','lasttime','sendmail','closemail')
 class UploadAdmin(admin.ModelAdmin):
@@ -50,7 +50,7 @@ class GroupAdmin(admin.ModelAdmin):
 #admin.site.register(Pro_type)
 admin.site.register(Users,UsersAdmin)
 admin.site.register(Hosts,HostsAdmin)
-admin.site.register(Monitor,MonitorAdmin)
+#admin.site.register(Monitor,MonitorAdmin)
 admin.site.register(Mastermonitor,MastermonitorAdmin)
 admin.site.register(Upload,UploadAdmin)
 admin.site.register(Log,LogAdmin)

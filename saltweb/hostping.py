@@ -24,9 +24,9 @@ if __name__ == "__main__":
         result.append(pool.apply_async(ping, (ip,tgt)))
     pool.close()
     rets = [i.get() for i in result]
-    saltids = [r['saltid'] for r in Monitor.objects.values('saltid')]
+    saltids = [r['saltid'] for r in Hosts.objects.values('saltid')]
     for i in rets:
         if i[0] in saltids:
-            Monitor.objects.filter(saltid=i[0]).update(pingstatus=i[2])
+            Hosts.objects.filter(saltid=i[0]).update(pingstatus=i[2])
         else:
-            Monitor.objects.create(saltid=i[0],ip=i[1],pingstatus=i[2])
+            Hosts.objects.create(saltid=i[0],ip=i[1],pingstatus=i[2])

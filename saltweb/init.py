@@ -8,7 +8,7 @@ from saltweb.models import *
 
 os.system('salt-key -D -y')
 Hosts.objects.all().delete()
-Monitor.objects.all().delete()
+#Monitor.objects.all().delete()
 Alarm.objects.all().delete()
 Chagelog.objects.all().delete()
 Deploylog.objects.all().delete()

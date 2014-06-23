@@ -123,5 +123,5 @@ def cmdminion(host):
     cmd += '&& sudo sed -i "$ a\id: %s_`hostname`" /etc/salt/minion ' % host
     cmd += '&& sudo rm -f /etc/salt/pki/minion/minion_master.pub'
     cmd += '&& sudo /etc/init.d/salt-minion restart >/dev/null'
-    cmd += "&& echo 'Success'"
+    cmd += '&& echo "Success %s_`hostname`"' % host
     return cmd

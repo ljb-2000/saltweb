@@ -12,25 +12,21 @@ class Users(Model):
 
 class Hosts(Model):
     saltid = CharField(max_length=50)
-    hostname = CharField(max_length=50)
-    ip = IPAddressField(unique=True)
-    port = IntegerField(default=sshdefaultport)
+    #ip = IPAddressField(unique=True)
+    ip = CharField(max_length=20)
+    hostname = CharField(max_length=50,blank=True)
+#    port = IntegerField(default=sshdefaultport)
     host_type = CharField(max_length=50,default='虚拟机')
-    os = CharField(max_length=50)
-    mem = CharField(max_length=50)
+    os = CharField(max_length=50,blank=True)
+    mem = CharField(max_length=50,blank=True)
     cpu = CharField(max_length=50,blank=True)
-    cpunum = IntegerField()
+    #cpunum = IntegerField(blank=True)
+    cpunum = CharField(max_length=10,blank=True)
     model = CharField(max_length=50,default='Null')
     sn = CharField(max_length=50,default='Null')
     disk = CharField(max_length=50,default='Null')
     mark = CharField(max_length=100,blank=True)
-    nowtime = DateTimeField(auto_now_add=True)
-    def __unicode__(self):
-        return self.ip
-
-class Monitor(Model):
-    saltid = CharField(max_length=50)
-    ip = IPAddressField()
+    updatetime = DateTimeField(auto_now_add=True)
     pingstatus = CharField(max_length=10,blank=True)
     saltstatus = CharField(max_length=10,blank=True)
     num = IntegerField(default=0)
@@ -39,7 +35,20 @@ class Monitor(Model):
     sendmail = IntegerField(default=0)
     closemail = IntegerField(default=0)
     def __unicode__(self):
-        return self.saltid
+        return self.ip
+
+#class Monitor(Model):
+#    saltid = CharField(max_length=50)
+#    ip = IPAddressField()
+#    pingstatus = CharField(max_length=10,blank=True)
+#    saltstatus = CharField(max_length=10,blank=True)
+#    num = IntegerField(default=0)
+#    nowtime = CharField(max_length=100,blank=True)
+#    lasttime = CharField(max_length=100,blank=True)
+#    sendmail = IntegerField(default=0)
+#    closemail = IntegerField(default=0)
+#    def __unicode__(self):
+#        return self.saltid
 
 class Mastermonitor(Model):
     saltid = CharField(max_length=50,default='saltwebmaster')

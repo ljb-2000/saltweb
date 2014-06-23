@@ -17,7 +17,31 @@ try:
     grains = c.cmd('*', 'grains.items')
 except:
     sys.exit()
-vmrets = c.cmd('*','cmd.run',['ls /dev/*vda'],timeout=5)    #xen是/dev/xvda，kvm是/dev/vda
+newlist = [r.saltid for r in Hosts.objects.filter(hostname='')]
+if newlist:
+    for saltid in newlist:
+        ip= saltid.split('_')[0]
+        grain = c.cmd(saltid, 'grains.items')
+        if grain:
+            os = grain[saltid]['osfullname']+grain[saltid]['osrelease']
+            cpu = grain[saltid]['cpu_model']
+            hostname = grain[saltid]['nodename']
+            mem = grain[saltid]['mem_total']
+            cpunum = int(grain[saltid]['num_cpus'])
+            #ip = [i for i in grains[saltid]['ipv4'] if i.startswith(comm.network_list)][0]
+            Hosts.objects.filter(saltid=saltid).update(cpu=cpu,cpunum=cpunum,mem=mem,hostname=hostname,os=os)
+            minions = [row['saltid'] for row in Hosts.objects.values('saltid')]
+            vmrets = c.cmd(saltid,'cmd.run',['ls /dev/*vda'],timeout=5) 
+            if 'No such file or directory' in vmrets[saltid]:
+                modelcmd = "dmidecode | grep 'Product Name: '|head -1|awk -F\: '{print $2}'|awk '{print $1,$2,$3}'"
+                modelret = c.cmd(saltid,'cmd.run',[modelcmd],timeout=5)
+                sncmd = "dmidecode -s system-serial-number"
+                snret = c.cmd(saltid,'cmd.run',[sncmd],timeout=5)
+                diskcmd = "fdisk -l 2>/dev/null|egrep '^Disk /dev/'|awk '{print $3,$4}'"
+                diskret = c.cmd(saltid,'cmd.run',[diskcmd],timeout=5)
+                nowtime = time.strftime("%Y-%m-%d %H:%M:%S")
+                Hosts.objects.filter(saltid=saltid).update(model=modelret[saltid],sn=snret[saltid],disk=diskret[saltid],host_type='实体机',nowtime=nowtime)
+
 for saltid,grain in grains.items():
     chage = {}
     os = grain['osfullname']+grain['osrelease']
@@ -25,7 +49,8 @@ for saltid,grain in grains.items():
     hostname = grain['nodename']
     mem = grain['mem_total']
     cpunum = int(grain['num_cpus'])
-    ip = [i for i in grain['ipv4'] if i.startswith(comm.network_list)][0]
+    ip= saltid.split('_')[0]
+    #ip = [i for i in grain['ipv4'] if i.startswith(comm.network_list)][0]
     if saltid in saltids:
         ret = Hosts.objects.get(saltid=saltid)
         if ip != ret.ip:chage['ip']='%s > %s' % (ret.ip,ip) 
@@ -40,12 +65,13 @@ for saltid,grain in grains.items():
             Chagelog.objects.create(saltid=saltid,ip=ip,chage=str(chage))
             subject=u'Hardware chage ' + saltid
             send_mail(subject,str(chage),comm.from_mail,comm.samail_list)
-    else:
-        ips = [row['ip'] for row in Hosts.objects.values('ip')]
-        if ip in ips:
-            Hosts.objects.filter(ip=ip).delete()
-            Monitor.objects.filter(ip=ip).delete()
-        Hosts.objects.create(saltid=saltid,cpu=cpu,cpunum=cpunum,mem=mem,hostname=hostname,os=os,ip=ip)
+    #else:
+    #    ips = [row['ip'] for row in Hosts.objects.values('ip')]
+    #    if ip in ips:
+    #        Hosts.objects.filter(ip=ip).delete()
+    #        Monitor.objects.filter(ip=ip).delete()
+    #    Hosts.objects.create(saltid=saltid,cpu=cpu,cpunum=cpunum,mem=mem,hostname=hostname,os=os,ip=ip)
+vmrets = c.cmd('*','cmd.run',['ls /dev/*vda'],timeout=5)    #xen是/dev/xvda，kvm是/dev/vda
 for saltid,vmret in vmrets.items():
     if 'No such file or directory' in vmret:
         chage = {}
@@ -65,7 +91,6 @@ for saltid,vmret in vmrets.items():
                     sn=snret[saltid],disk=diskret[saltid],host_type='实体机',nowtime=nowtime)
             if ret.model != 'Null':
                 ip = Hosts.objects.get(saltid=saltid).ip
-                print ip
                 Chagelog.objects.create(saltid=saltid,ip=ip,chage=str(chage))
                 subject=u'Hardware chage ' + saltid
                 send_mail(subject,str(chage),comm.from_mail,comm.samail_list)
