@@ -340,14 +340,15 @@ def sshcmd(request):
             pool = multiprocessing.Pool(processes=thread_num)
             result = []
             for ip in ips:
-                port = Hosts.objects.get(ip=ip).port
+                #port = Hosts.objects.get(ip=ip).port
+                port = sshdefaultport 
                 username = request.POST.get('username','')
                 passwd = Users.objects.get(username=username).passwd
                 cmd = request.POST.get('cmd','')
                 result.append(pool.apply_async(ssh, (ip,int(port),username,passwd,cmd)))
             pool.close()
             ret1 = [i.get() for i in result]
-            ret1 = ret1.decode('utf8')
+            #ret1 = ret1.decode('utf8')
             total = len(ret1)
             execerr = [','.join(i.keys()) for i in ret1 if ','.join(i.values()).startswith('Error:')]
             errnum = len(execerr)
@@ -548,14 +549,14 @@ def install(request):
         if request.POST.has_key("install"):
             saltid = request.POST.get('saltid','')
             software = request.POST.get('software','')
-            cmd = "wget %s/install/%s -O /tmp/%s >/dev/null 2>&1 && sh /tmp/%s >/dev/null 2>&1 && echo 'Install Success !!!'" % (download_url,software,software,software)
+            cmd = "wget %s/install/%s -O /tmp/%s >/dev/null 2>&1 && cd /tmp && sh %s >/dev/null 2>&1 && echo 'Install Success !!!'" % (download_url,software,software,software)
             def execcmd():
                 c = salt.client.LocalClient()
                 Deploylog.objects.create(name=software,saltid=saltid)
                 id = Deploylog.objects.order_by('-id')[0].id
                 rets = c.cmd(saltid,'cmd.run',[cmd],timeout=999)
                 minions = c.run_job(saltid,'cmd.run',['echo'])['minions']
-                retok = [ret[0] for ret in rets.items() if "Success" in ret[1]]
+                retok = [ret[0] for ret in rets.items() if "Install Success" in ret[1]]
                 execerr = list(set(minions).difference(set(retok)))
                 total = len(minions)
                 errnum = len(execerr)

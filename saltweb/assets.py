@@ -56,7 +56,7 @@ for saltid,grain in grains.items():
         if ip != ret.ip:chage['ip']='%s > %s' % (ret.ip,ip) 
         if os != ret.os:chage['os']='%s > %s' % (ret.os,os) 
         if cpu != ret.cpu:chage['cpu']='%s > %s' % (ret.cpu,cpu)
-        if cpunum != ret.cpunum:chage['cpunum']='%s > %s' % (ret.cpunum,cpunum)
+        if int(cpunum) != int(ret.cpunum):chage['cpunum']='%s > %s' % (ret.cpunum,cpunum)
         if mem != int(ret.mem):chage['mem']='%s > %s' % (ret.mem,mem)
         if hostname != ret.hostname:chage['hostname']='%s > %s' % (ret.hostname,hostname)
         if chage:

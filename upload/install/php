@@ -1,0 +1,141 @@
+#!/bin/sh
+#author: hhr
+#date 2013-10-25
+
+echo "auto install php for redhat/centos---------->"
+
+# Require root to run this script.
+[[ "$(whoami)" != "root" ]] && echo "Please run this script as root." >&2 && exit 1
+
+#set env
+log_file="/tmp/$0.log"
+auto_install_ip="192.168.1.4"	#default soft download server
+save_path="/application/tools"
+installDir="/application"
+
+#clear log
+>${log_file}
+Down_Soft() { 
+mkdir -p ${save_path}
+cd ${save_path}
+if [ ! -f "${soft_package}" ];then
+        wget http://172.16.1.237:8000/software/${soft_package} >>${log_file} 2>>${log_file}
+        if [ $? -ne 0 ]||[ ! -f "${soft_package}" ];then
+                echo "${soft_package} soft is not exist!" |tee -a ${log_file} 
+                exit 1
+        fi
+fi
+}
+Install_PHP() {
+soft_package="phpsoft.tar.gz"
+soft_short_package="phpsoft"
+softname="php-5.3.8.tar.bz2"
+sort_short_name="php-5.3.8"
+installSoftName="php-5.3.8"
+use_short_name="php"
+echo "[$(date +%Y%m%d\ %T)]----------start PHP--------------------------------------->" |tee -a ${log_file}
+Down_Soft
+#requires rpm package
+yum -y install curl curl-devel freetype freetype-devel libpng libpng-devel libxml2 libxml2-devel gd gd-devel libxslt libxslt-devel openssl openssl-devel >>${log_file} 2>>${log_file}
+echo "install php ------------->"  |tee -a ${log_file}
+cd ${save_path}
+tar zxvf ${soft_package}  >>${log_file} 2>>${log_file}
+cd ${soft_short_package}
+tar -zxvf libiconv-1.13.1.tar.gz  >>${log_file} 2>>${log_file}
+cd libiconv-1.13.1
+./configure --prefix=${installDir}/libiconv >>${log_file} 2>>${log_file} && make >>${log_file} 2>>${log_file} && make install >>${log_file} 2>>${log_file}
+[ $? -ne 0 ] && echo 'php depend on software package is install fail!' &&exit 1
+echo 'php depend on software package is install ok!'
+
+cd ${save_path}/${soft_short_package}
+tar -jxvf ${softname}  >>${log_file} 2>>${log_file}
+cd ${sort_short_name}
+./configure  \
+--prefix=${installDir}/${sort_short_name} \
+--with-apxs2=${installDir}/apache/bin/apxs \
+--with-iconv=${installDir}/libiconv \
+--with-mysql=mysqlnd \
+--with-ttf=shared  \
+--with-freetype-dir \
+--with-gd \
+--with-zlib \
+--with-jpeg-dir \
+--with-png-dir \
+--enable-short-tags \
+--enable-sockets \
+--enable-zend-multibyte \
+--enable-soap \
+--with-openssl \
+--enable-mbstring \
+--enable-static \
+--enable-gd-native-ttf \
+--with-curl \
+--with-xsl \
+--enable-ftp \
+--with-libxml-dir  >>${log_file} 2>>${log_file} && make >>${log_file} 2>>${log_file} && make install >>${log_file} 2>>${log_file}
+[ $? -ne 0 ] && echo 'install php is fail!'&& exit 1
+echo 'install php is ok!'
+cd ../
+
+ln -s  ${installDir}/${sort_short_name} ${installDir}/${use_short_name}
+#/bin/cp ${installDir}/${use_short_name}/lib/{php.ini,php.ini-ori}
+/bin/cp php.ini-5.3.8-model ${installDir}/${use_short_name}/lib/php.ini
+
+echo "install memcache ....."  |tee -a ${log_file}
+cd ${save_path}/${soft_short_package}
+tar zxvf memcache-2.2.5.tgz  >>${log_file} 2>>${log_file}
+cd memcache-2.2.5
+${installDir}/${use_short_name}/bin/phpize >>${log_file} 2>>${log_file}
+./configure --with-php-config=${installDir}/${use_short_name}/bin/php-config >>${log_file} 2>>${log_file} \
+&& make >>${log_file} 2>>${log_file} &&make install >>${log_file} 2>>${log_file}
+[ $? -ne 0 ] && echo 'install memcache fail!' && exit 1
+echo 'install memcache is ok!' 
+cd ../
+echo "install xcache ....."  |tee -a ${log_file}
+cd ${save_path}/${soft_short_package}
+tar -xjvf xcache-1.3.2.tar.bz2  >>${log_file} 2>>${log_file}
+cd xcache-1.3.2
+${installDir}/${use_short_name}/bin/phpize >>${log_file} 2>>${log_file}
+./configure --prefix=/application/xcache-1.3.2 --enable-xcache  --with-php-config=${installDir}/${use_short_name}/bin/php-config >>${log_file} 2>>${log_file} && make >>${log_file} 2>>${log_file} && make install >>${log_file} 2>>${log_file}
+[ $? -ne 0 ] && echo 'install xcache fail!' && exit 1
+cat >>${installDir}/${use_short_name}/lib/php.ini<<EOF
+[xcache-common]
+extension = xcache.so
+
+[xcache.admin]
+xcache.admin.enable_auth = On
+xcache.admin.user = "mOo"
+xcache.admin.pass = ""
+
+[xcache]
+xcache.shm_scheme =        "mmap"
+xcache.size  =               128M
+xcache.count =                 2
+xcache.slots =                8K
+xcache.ttl   =                 86400
+xcache.gc_interval =           3600
+xcache.var_size  =            0
+xcache.var_count =             1
+xcache.var_slots =            8K
+xcache.var_ttl   =             0
+xcache.var_maxttl   =          0
+xcache.var_gc_interval =     300
+
+xcache.test =                Off
+xcache.readonly_protection = Off
+xcache.mmap_path =    "/dev/zero"
+xcache.coredump_directory =   ""
+xcache.cacher =               On
+xcache.stat   =               On
+xcache.optimizer =           Off
+
+[xcache.coverager]
+xcache.coverager =          Off
+xcache.coveragedump_directory = ""
+
+EOF
+echo 'install xcache is ok!'
+echo "[$(date +%Y%m%d\ %T)]----------end PHP--------------------------------------->" |tee -a ${log_file}
+}
+#exec func
+Install_PHP
