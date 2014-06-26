@@ -23,7 +23,7 @@ master salt-master状态：{% ifequal masterstatus 'down' %}<font color='red'>{{
 </tr>
 {% endfor %}
 </table>
-<a href="">首页</a>
+<a href="?curPage=1&&allPage={{ allPage }}">首页</a>
 {% ifnotequal curPage 1 %}
     <a href="?curPage={{ curPage }}&&allPage={{ allPage }}&&pageType=pageUp">上一页</a>    
 {% endifnotequal %}

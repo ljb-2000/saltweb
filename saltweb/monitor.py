@@ -32,7 +32,8 @@ else:
 c = salt.client.LocalClient()
 rets = c.cmd('*','test.ping')
 saltids = [r['saltid'] for r in Hosts.objects.values('saltid')]
-saltkeys = c.run_job('*','cmd.run',['echo'])['minions']
+#saltkeys = c.run_job('*','cmd.run',['echo'])['minions']
+saltkeys = os.listdir('/etc/salt/pki/master/minions')
 newlist = list(set(saltkeys).difference(set(saltids)))   #新增minion列表
 oldlist = list(set(saltids).difference(set(saltkeys)))  #删除minion列表
 downlist = list(set(saltids).difference(set(rets.keys())))  #宕机列表

@@ -150,7 +150,8 @@ def minions(request):
     if os.system("/etc/init.d/salt-master status >/dev/null") != 0:
         msg = "salt-master服务未启动"
     elif request.method != 'POST':
-        minions = sorted(c.run_job('*','cmd.run',['echo'],expr_form='glob')['minions'])
+        #minions = sorted(c.run_job('*','cmd.run',['echo'],expr_form='glob')['minions'])
+        minions = sorted(os.listdir('/etc/salt/pki/master/minions'))
     elif request.method == 'POST':
         port = sshdefaultport
         username = request.POST.get('username','')
@@ -310,7 +311,8 @@ def saltcmd(request):
         fun = request.POST.get('fun','')
         cmd = request.POST.get('cmd','')
         type = request.POST.get('type','')
-        minions = c.run_job(saltid,'cmd.run',['echo'],expr_form=type)['minions']
+        #minions = c.run_job(saltid,'cmd.run',['echo'],expr_form=type)['minions']
+        minions = os.listdir('/etc/salt/pki/master/minions')
         dangercmds = [i for i in dangercmdlist if i in cmd]
         if not dangercmds:
             ret1 = c.cmd(saltid,fun,[cmd],expr_form=type,timeout=99)
@@ -329,7 +331,7 @@ def sshcmd(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
     dangercmd = ",".join(dangercmdlist)
-    ips = [row['ip'] for row in Hosts.objects.values('ip')]
+    ips = sorted([row['ip'] for row in Hosts.objects.values('ip')])
     users = [row.username for row in Users.objects.all()]
     ip = ''
     cmd = ''
@@ -340,7 +342,6 @@ def sshcmd(request):
             pool = multiprocessing.Pool(processes=thread_num)
             result = []
             for ip in ips:
-                #port = Hosts.objects.get(ip=ip).port
                 port = sshdefaultport 
                 username = request.POST.get('username','')
                 passwd = Users.objects.get(username=username).passwd
@@ -348,7 +349,6 @@ def sshcmd(request):
                 result.append(pool.apply_async(ssh, (ip,int(port),username,passwd,cmd)))
             pool.close()
             ret1 = [i.get() for i in result]
-            #ret1 = ret1.decode('utf8')
             total = len(ret1)
             execerr = [','.join(i.keys()) for i in ret1 if ','.join(i.values()).startswith('Error:')]
             errnum = len(execerr)
@@ -356,7 +356,7 @@ def sshcmd(request):
             if len(execerr) > 950: execerr = execerr[:950]+'...'
             Log.objects.create(user=str(user),ip=host,saltid='-',logtype='ssh',cmd=cmd,execerr=execerr)
         elif host.startswith(network_list):
-            port = Hosts.objects.get(ip=host).port
+            port = sshdefaultport
             username = request.POST.get('username','')
             passwd = Users.objects.get(username=username).passwd
             cmd = request.POST.get('cmd','')
@@ -449,7 +449,8 @@ def syncfile(request):
         cmd = 'wget %s%s -O %s >/dev/null 2>&1 && echo "saltexec_ok !!!"' % (download_url,filename,remote)
         c = salt.client.LocalClient()
         rets = c.cmd(saltid,'cmd.run',[cmd],timeout=5)
-        minions = c.run_job(saltid,'cmd.run',['echo'])['minions']
+        #minions = c.run_job(saltid,'cmd.run',['echo'])['minions']
+        minions = os.listdir('/etc/salt/pki/master/minions')
         retok = [ret[0] for ret in rets.items() if "saltexec_ok" in ret[1]]
         execerr = list(set(minions).difference(set(retok)))
         total = len(minions)
@@ -481,7 +482,8 @@ def sysuser(request):
                 if usertype == '2':
                     cmd = '%s &&chattr -i /etc/sudoers && echo "%s  ALL=(ALL)  NOPASSWD: ALL">>/etc/sudoers && chattr +i /etc/sudoers' % (cmd,username)
                 c = salt.client.LocalClient()
-                minions = c.run_job(saltid,'cmd.run',['echo'])['minions']
+                #minions = c.run_job(saltid,'cmd.run',['echo'])['minions']
+                minions = os.listdir('/etc/salt/pki/master/minions')
                 ret1 = c.cmd(saltid,'cmd.run',[cmd],timeout=5)
                 retok = [ret[0] for ret in ret1.items() if "successfully" in ret[1]]
                 execerr = list(set(minions).difference(set(retok)))
@@ -500,7 +502,8 @@ def sysuser(request):
             saltid = request.POST.get('saltid','')
             username = request.POST.get('username','') 
             c = salt.client.LocalClient()
-            minions = c.run_job(saltid,'cmd.run',['echo'])['minions'] 
+            #minions = c.run_job(saltid,'cmd.run',['echo'])['minions'] 
+            minions = os.listdir('/etc/salt/pki/master/minions')
             cmd = "userdel %s >/dev/null 2>&1 ;echo 'successfully'" % username
             ret1 = c.cmd(saltid,'cmd.run',[cmd],timeout=5)      
             retok = [ret[0] for ret in ret1.items() if "successfully" in ret[1]]
@@ -520,7 +523,8 @@ def sysuser(request):
             cmd = "echo %s|passwd --stdin %s" % (passwd,username)
             if passwd == passwd1:
                 c = salt.client.LocalClient()
-                minions = c.run_job(saltid,'cmd.run',['echo'])['minions']
+                #minions = c.run_job(saltid,'cmd.run',['echo'])['minions']
+                minions = os.listdir('/etc/salt/pki/master/minions')
                 ret1 = c.cmd(saltid,'cmd.run',[cmd],timeout=5)
                 retok = [ret[0] for ret in ret1.items() if "successfully" in ret[1]]
                 execerr = list(set(minions).difference(set(retok)))
@@ -555,7 +559,8 @@ def install(request):
                 Deploylog.objects.create(name=software,saltid=saltid)
                 id = Deploylog.objects.order_by('-id')[0].id
                 rets = c.cmd(saltid,'cmd.run',[cmd],timeout=999)
-                minions = c.run_job(saltid,'cmd.run',['echo'])['minions']
+                #minions = c.run_job(saltid,'cmd.run',['echo'])['minions']
+                minions = os.listdir('/etc/salt/pki/master/minions')
                 retok = [ret[0] for ret in rets.items() if "Install Success" in ret[1]]
                 execerr = list(set(minions).difference(set(retok)))
                 total = len(minions)

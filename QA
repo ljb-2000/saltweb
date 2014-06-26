@@ -14,4 +14,5 @@ Defaults requiretty修改为 #Defaults requiretty， 表示不需要控制终端
 原因：execerr的字符串长度超出了数据库模型中设置长度
 
 5. Failed to connect to the Master, is the Salt Master running?
-原因：salt-master未完全启动
+原因：salt-master未完全启动，一般是缓存文件太多导致salt-master启动慢
+解决：rm -rf /var/cache/salt

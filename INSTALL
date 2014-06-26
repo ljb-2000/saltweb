@@ -61,5 +61,7 @@ python /root/saltweb/saltweb/init.py
 python /root/saltweb/saltweb/salt_service.py start
 python /root/saltweb/saltweb/salt_service.py status
 
+修改/root/saltweb/upload/install/目录下脚本中的ip地址成master本机ip地址
+
 ###测试
 修改本机host，添加"172.16.1.237 www.saltweb.com",访问http://www.saltweb.com/salt
