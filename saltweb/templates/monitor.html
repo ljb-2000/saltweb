@@ -5,7 +5,8 @@
 {% block page-content %}
 <div class="location_div">位置：监控 >> 主机监控  </div>
 <h2>主机状态监控</h2>
-master salt-master状态：{% ifequal masterstatus 'down' %}<font color='red'>{{ masterstatus }}</font>{% else %}<font color='green'>{{ masterstatus }}</font>{% endifequal %}<br>
+master ip地址：{% if not master_ip %}<font color='red'>本机ip地址与comm.py配置文件中masterip不一致，请修改！</font>{% else %}{{ master_ip }}{% endif %}<br>
+salt-master状态：{% ifequal masterstatus 'down' %}<font color='red'>{{ masterstatus }}</font>{% else %}<font color='green'>{{ masterstatus }}</font>{% endifequal %}<br>
 总共minion主机：{{ total }}台  正常主机：<font color='green'>{{ up }}</font>台  故障主机：<font color='red'>{{ down }}</font>台<br>
 每5分钟监控一次主机状态，连续3次监控到salt状态的false则发邮件报警<br>
 <table class="table">

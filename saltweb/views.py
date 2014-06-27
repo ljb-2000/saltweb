@@ -53,6 +53,9 @@ def logout(request):
 def monitor(request):
     user = request.user
     msgnum = Msg.objects.filter(isread=0,msgto=user).count()
+    master_ip = masterip
+    master_ips = os.popen("ip a|grep 'inet '|grep -v 127.0.0.1").read()
+    if master_ip not in master_ips: master_ip = ''
     masterstatus = Mastermonitor.objects.get(id=1).status
     up = Hosts.objects.filter(saltstatus='True').count()
     down = Hosts.objects.filter(saltstatus='False').count()
@@ -170,6 +173,9 @@ def minions(request):
                         Minionslog.objects.create(name='add_minion',ip=host)
                         id = Minionslog.objects.order_by('-id')[0].id
                         ret = ssh(host,port,username,passwd,cmd)
+                        if "Success" in ret[host]:
+                            saltid = ret[host].split()[1]
+                            if saltid not in saltids: Hosts.objects.create(saltid=saltid,ip=host,saltstatus='False')
                         endtime = time.strftime("%Y-%m-%d %H:%M:%S")
                         Minionslog.objects.filter(id=id).update(status='已完成',deployret=ret[host],endtime=endtime)
                     threading.Thread(target=sshfc,args=(host,)).start()
@@ -183,6 +189,9 @@ def minions(request):
                         Minionslog.objects.create(name='add_minion',ip=host)
                         id = Minionslog.objects.order_by('-id')[0].id
                         ret = ssh(host,port,username,passwd,cmd)
+                        if "Success" in ret[host]:
+                            saltid = ret[host].split()[1]
+                            if saltid not in saltids: Hosts.objects.create(saltid=saltid,ip=host,saltstatus='False')
                         endtime = time.strftime("%Y-%m-%d %H:%M:%S")
                         Minionslog.objects.filter(id=id).update(status='已完成',deployret=ret[host],endtime=endtime)
                     threading.Thread(target=sshfc,args=(host,)).start()
@@ -198,7 +207,7 @@ def minions(request):
                 ret = ssh(host,port,username,passwd,cmd)
                 if "Success" in ret[host]:
                     saltid = ret[host].split()[1]
-                    Hosts.objects.create(saltid=saltid,ip=host,saltstatus='False')
+                    if saltid not in saltids: Hosts.objects.create(saltid=saltid,ip=host,saltstatus='False')
                 endtime = time.strftime("%Y-%m-%d %H:%M:%S")
                 Minionslog.objects.filter(id=id).update(status='已完成',deployret=ret[host],endtime=endtime)
             threading.Thread(target=sshfc,args=(host,)).start()
